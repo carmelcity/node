@@ -1,6 +1,6 @@
 {
     "name": "@carmel/node",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "Carmel Node",
     "main": "src/index.mts",
     "type": "module",
