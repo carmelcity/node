@@ -1,6 +1,6 @@
 {
     "name": "@carmel/node",
-    "version": "1.2.1",
+    "version": "1.2.5",
     "description": "Carmel Node",
     "main": "src/index.mts",
     "type": "module",
@@ -21,6 +21,7 @@
         "@libp2p/webrtc": "^4.1.7",
         "@libp2p/websockets": "^8.2.0",
         "@libp2p/webtransport": "^4.1.7",
+        "@multiformats/multiaddr": "^12.3.0",
         "debug": "^4.3.6",
         "dotenv": "^16.4.5",
         "figlet": "^1.7.0",
@@ -28,7 +29,6 @@
         "helia": "^4.2.5",
         "libp2p": "^1.9.2",
         "lowdb": "^7.0.1",
-        "multiaddr": "^10.0.1",
         "nanoid": "^5.0.7"
     },
     "devDependencies": {
