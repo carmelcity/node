@@ -1,4 +1,4 @@
-import { relay, sentinel, utils } from './index.ts'
+import { relay, sentinel, utils } from '../index.mts'
 import path from 'path'
 import dotenv from 'dotenv'
 

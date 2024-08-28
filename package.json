@@ -1,13 +1,13 @@
 {
     "name": "@carmel/node",
-    "version": "1.2.9",
+    "version": "1.2.10",
     "description": "Carmel Node",
-    "main": "src/index.ts",
+    "main": "src/index.mts",
     "type": "module",
     "author": "Chunky <chunky@fluidtrends.com>",
     "license": "MIT",
     "scripts": {
-        "dev": "DEBUG=carmel* node --import @swc-node/register/esm-register src/dev.ts"
+        "dev": "DEBUG=carmel* node --import @swc-node/register/esm-register src/scripts/dev.ts"
     },
     "dependencies": {
         "@chainsafe/libp2p-noise": "^15.1.1",
