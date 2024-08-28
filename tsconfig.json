@@ -17,11 +17,8 @@
       "resolveJsonModule": true,
       "isolatedModules": true,
       "jsx": "preserve",
-      "incremental": true,
-      "paths": {
-        "@/*": ["./src/*"]
-      }
+      "incremental": true
     },
-    "include": ["types/*.d.ts", "**/*.mts"],
+    "include": ["types/*.d.ts", "**/*.mts", "**/*.ts"],
     "exclude": ["node_modules"]
   }
