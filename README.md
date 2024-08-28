@@ -1,2 +1,3 @@
-# node
-The Carmel Node
+# Carmel Node
+
+The official Carmel Node repository. 
