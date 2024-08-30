@@ -1,13 +1,15 @@
 {
     "name": "@carmel/node",
-    "version": "1.2.11",
+    "version": "1.2.12",
     "description": "Carmel Node",
     "main": "src/index.mts",
     "type": "module",
     "author": "Chunky <chunky@fluidtrends.com>",
     "license": "MIT",
     "scripts": {
-        "dev": "DEBUG=carmel* node --import @swc-node/register/esm-register src/scripts/dev.mts"
+        "dev": "DEBUG=carmel* node --import @swc-node/register/esm-register src/scripts/dev.mts",
+        "start": "DEBUG=carmel* pm2 --node-args=\"--import @swc-node/register/esm-register\" start src/scripts/dev.mts --name carmel-node",
+        "log": "pm2 logs carmel-node"
     },
     "dependencies": {
         "@chainsafe/libp2p-noise": "^15.1.1",
