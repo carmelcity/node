@@ -61,16 +61,9 @@ export const start = async () => {
     })
 
     await node.start()
+    console.log(`node started with id ${node.peerId.toString()}`)
 
-    const listenAddrs = node.getMultiaddrs()
-    
-    if (!listenAddrs || listenAddrs.length == 0) {
-        await node.stop()
-        logger(`could not listen, stopped.`)
-        return 
-    }
-
-    listenAddrs.map((addr: any) => {
-        logger(`listening on ${addr} ...`)
+    node.addEventListener('self:peer:update', (evt) => {
+        console.log(evt)
     })
 }
