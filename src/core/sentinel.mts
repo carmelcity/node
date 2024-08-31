@@ -12,6 +12,7 @@ import { yamux } from '@chainsafe/libp2p-yamux'
 import * as filters from '@libp2p/websockets/filters'
 import { getPeerId, logger } from '../utils/main.mjs'
 import { circuitRelayTransport } from '@libp2p/circuit-relay-v2'
+import { multiaddr } from '@multiformats/multiaddr'
 
 const CARMEL_HOME = `${process.env.CARMEL_HOME}`
 dotenv.config({ path: path.resolve(CARMEL_HOME, '.env') })
@@ -19,11 +20,21 @@ dotenv.config({ path: path.resolve(CARMEL_HOME, '.env') })
 const getRelays = async () => {
     const relays = [{
         domain: `r0.carmel.network`,
-        port: 443,
+        port: 9009,
         peerId: `16Uiu2HAkzoD7NHWgVP8zJkSTubA4wrHSUphY7CMy736mamBDcemZ`
     }]
 
     return relays.map((relay: any) => `/dns4/${relay.domain}/tcp/${relay.port}/wss/p2p/${relay.peerId}`)
+}
+
+const checkPeers = async (node: any) => {
+    setTimeout(async () => {
+        const peers = node.getPeers()
+        peers.map((peer: any) => {
+            console.log(peer)
+        })
+        await checkPeers(node)
+    }, 2000)
 }
 
 export const start = async () => {
@@ -66,4 +77,10 @@ export const start = async () => {
     node.addEventListener('self:peer:update', (evt) => {
         console.log(evt)
     })
+
+    node.addEventListener('peer:discovery', (evt) => {
+        console.log(evt)
+    })
+
+    await checkPeers(node)
 }
