@@ -13,6 +13,7 @@ import * as filters from '@libp2p/websockets/filters'
 import { getPeerId, logger } from '../utils/main.mjs'
 import { circuitRelayTransport } from '@libp2p/circuit-relay-v2'
 import { multiaddr } from '@multiformats/multiaddr'
+import { fromString, toString } from 'uint8arrays'
 
 const CARMEL_HOME = `${process.env.CARMEL_HOME}`
 dotenv.config({ path: path.resolve(CARMEL_HOME, '.env') })
@@ -44,6 +45,7 @@ const checkPeers = async (node: any) => {
             })
         }
 
+        await node.services.pubsub.publish('carmel:sys', fromString('test-test'))
         await checkPeers(node)
     }, 2000)
 }
@@ -83,7 +85,14 @@ export const start = async () => {
     })
 
     await node.start()
+
     console.log(`node started with id ${node.peerId.toString()}`)
+
+    node.services.pubsub.addEventListener('message', async  (e: any) => {
+        console.log(e.detail)
+    })
+
+    node.services.pubsub.subscribe('carmel:sys')
 
     node.addEventListener('self:peer:update', (evt: any) => {
         console.log(evt.detail)
