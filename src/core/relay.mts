@@ -23,7 +23,7 @@ export const start = async () => {
 
     const MAIN_SSL_NAME = `${process.env.MAIN_SSL_NAME}`
     const MAIN_SSL_DOMAIN = `${process.env.MAIN_SSL_DOMAIN}`
-    const MAIN_SSL_PORT = `${process.env.MAIN_SSL_PORT}`
+    const MAIN_SSL_PORT = "9000"//`${process.env.MAIN_SSL_PORT}`
 
     const sslCertFile = path.resolve(CARMEL_HOME, '.carmel', 'ssl', `${MAIN_SSL_NAME}.cert`)
     const sslKeyFile = path.resolve(CARMEL_HOME, '.carmel', 'ssl', `${MAIN_SSL_NAME}.key`)
@@ -37,7 +37,7 @@ export const start = async () => {
     const key = fs.readFileSync(sslKeyFile, 'utf8')    
     const server = https.createServer({ cert, key })
     const announce = [`/dns4/${MAIN_SSL_DOMAIN}/tcp/${MAIN_SSL_PORT}/wss/p2p/${peerId}`]
-
+    
     logger(`Starting relay with peerId=${peerId} ...`)
 
     const node = await createLibp2p({
