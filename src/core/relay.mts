@@ -18,12 +18,28 @@ const CARMEL_HOME = `${process.env.CARMEL_HOME}`
 
 dotenv.config({ path: path.resolve(CARMEL_HOME, '.env') })
 
+const checkPeers = async (node: any) => {
+    setTimeout(async () => {
+        const peers = node.getPeers()
+
+        if (!peers || peers.length == 0) {
+            console.log("no peers yet")
+        } else {
+            peers.map((peer: any) => {
+                console.log(peer)
+            })
+        }
+
+        await checkPeers(node)
+    }, 2000)
+}
+
 export const start = async () => {
     const peerId = await getPeerId()
 
     const MAIN_SSL_NAME = `${process.env.MAIN_SSL_NAME}`
     const MAIN_SSL_DOMAIN = `${process.env.MAIN_SSL_DOMAIN}`
-    const MAIN_SSL_PORT = "9000"//`${process.env.MAIN_SSL_PORT}`
+    const MAIN_SSL_PORT = `${process.env.MAIN_SSL_PORT}`
 
     const sslCertFile = path.resolve(CARMEL_HOME, '.carmel', 'ssl', `${MAIN_SSL_NAME}.cert`)
     const sslKeyFile = path.resolve(CARMEL_HOME, '.carmel', 'ssl', `${MAIN_SSL_NAME}.key`)
@@ -76,4 +92,24 @@ export const start = async () => {
     listenAddrs.map((addr: any) => {
         logger(`listening on ${addr} ...`)
     })
+
+    console.log(`node started with id ${node.peerId.toString()}`)
+
+    node.addEventListener('self:peer:update', (evt: any) => {
+        console.log(evt.detail)
+    })
+
+    node.addEventListener('peer:discovery', (evt: any) => {
+        console.log(evt.detail)
+    })
+
+    node.addEventListener('peer:connect', (evt: any) => {
+        console.log(evt.detail)
+    })
+
+    node.addEventListener('peer:disconnect', (evt: any) => {
+        console.log(evt.detail)
+    })
+
+    await checkPeers(node)
 }
