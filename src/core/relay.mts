@@ -43,7 +43,7 @@ const checkPeers = async (node: any) => {
         }
 
         if (subscribers && subscribers.length > 0) {
-            await node.services.pubsub.publish('carmel', 'hello from relay')
+            await node.services.pubsub.publish('carmel',  new TextEncoder().encode('hello from relay'))
             console.log(`sent message to ${subscribers.length} subscribers`)
         }
 
