@@ -1,4 +1,4 @@
-import { onRelayMessageReceived, onSentinelMessageReceived, sendRelayMessage } from 'src/core/messenger.mts'
+import { onRelayMessageReceived, onSentinelMessageReceived, sendRelayMessage, sendSentinelMessage } from 'src/core/messenger.mts'
 
 const TICK_TIME_SEC = 5
 
@@ -31,7 +31,7 @@ const nextSentinelTick = async (node: any) => {
         const { peers, pubsubPeers, subscribers } = await nodeStatus(node)
         
         if (subscribers && subscribers.length > 0) {
-            await sendRelayMessage(node, { message: 'hello from sentinel' })
+            await sendSentinelMessage(node, { message: 'hello from sentinel' })
         }
 
         console.log(`sentinel status: ${peers.length} peers, ${pubsubPeers.length} pubsub peers, ${subscribers.length} subscribers`)

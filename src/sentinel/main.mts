@@ -8,7 +8,6 @@ const CARMEL_HOME = `${process.env.CARMEL_HOME}`
 
 dotenv.config({ path: path.resolve(CARMEL_HOME, '.env') })
 
-
 const getRelays = async () => {
     const relays = [{
         domain: `r0.carmel.network`,
@@ -36,18 +35,6 @@ export const start = async () => {
     })
 
     await node.start()
-
-    const listenAddrs = node.getMultiaddrs()
-    
-    if (!listenAddrs || listenAddrs.length == 0) {
-        await node.stop()
-        logger(`sentinel could not listen`)
-        return 
-    }
-
-    listenAddrs.map((addr: any) => {
-        logger(`sentinel listening on ${addr} ...`)
-    })
 
     logger(`sentinel started with id ${node.peerId.toString()}`)
 
