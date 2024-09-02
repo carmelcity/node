@@ -21,11 +21,22 @@ dotenv.config({ path: path.resolve(CARMEL_HOME, '.env') })
 const checkPeers = async (node: any) => {
     setTimeout(async () => {
         const peers = node.getPeers()
+        const meshPeers = node.services.pubsub.getPeers()
 
         if (!peers || peers.length == 0) {
             console.log("no peers yet")
         } else {
+            console.log(`${peers.length} peers`)
             peers.map((peer: any) => {
+                console.log(peer)
+            })
+        }
+
+        if (!meshPeers || meshPeers.length == 0) {
+            console.log("no meshPeers yet")
+        } else {
+            console.log(`${meshPeers.length} meshPeers`)
+            meshPeers.map((peer: any) => {
                 console.log(peer)
             })
         }
@@ -60,7 +71,7 @@ export const start = async () => {
         peerId,
         addresses: Object.assign({
             listen: [
-                `/ip4/127.0.0.1/tcp/${MAIN_SSL_PORT}/wss`,
+                `/ip4/0.0.0.0/tcp/${MAIN_SSL_PORT}/wss`,
             ]
         }, announce && { announce }),
         transports: [
@@ -95,20 +106,27 @@ export const start = async () => {
 
     console.log(`node started with id ${node.peerId.toString()}`)
 
+
+    node.services.pubsub.subscribe('carmel')  
+    
+    node.services.pubsub.addEventListener('message', (message: any) => {
+        console.log(`${message.detail.topic}:`, new TextDecoder().decode(message.detail.data))
+    })
+
     node.addEventListener('self:peer:update', (evt: any) => {
-        console.log(evt.detail)
+        console.log("me:", evt.detail)
     })
 
     node.addEventListener('peer:discovery', (evt: any) => {
-        console.log(evt.detail)
+        console.log("discovered peer", evt.detail)
     })
 
     node.addEventListener('peer:connect', (evt: any) => {
-        console.log(evt.detail)
+        console.log("connected to peer", evt.detail)
     })
 
     node.addEventListener('peer:disconnect', (evt: any) => {
-        console.log(evt.detail)
+        console.log("disconnected from peer", evt.detail)
     })
 
     await checkPeers(node)
