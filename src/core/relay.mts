@@ -22,6 +22,7 @@ const checkPeers = async (node: any) => {
     setTimeout(async () => {
         const peers = node.getPeers()
         const meshPeers = node.services.pubsub.getPeers()
+        const subscribers = node.services.pubsub.getSubscribers('carmel')
 
         if (!peers || peers.length == 0) {
             console.log("no peers yet")
@@ -39,6 +40,11 @@ const checkPeers = async (node: any) => {
             meshPeers.map((peer: any) => {
                 console.log(peer)
             })
+        }
+
+        if (subscribers && subscribers.length > 0) {
+            await node.services.pubsub.publish('carmel', 'hello from relay')
+            console.log(`sent message to ${subscribers.length} subscribers`)
         }
 
         await checkPeers(node)
@@ -110,7 +116,7 @@ export const start = async () => {
     node.services.pubsub.subscribe('carmel')  
     
     node.services.pubsub.addEventListener('message', (message: any) => {
-        console.log(`${message.detail.topic}:`, new TextDecoder().decode(message.detail.data))
+        console.log(`[${message.detail.topic}]:`, new TextDecoder().decode(message.detail.data))
     })
 
     node.addEventListener('self:peer:update', (evt: any) => {
