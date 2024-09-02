@@ -41,28 +41,30 @@ const getRelays = async () => {
 const checkPeers = async (node: any) => {
     setTimeout(async () => {
         const peers = node.getPeers()
-        // const subscribers = node.services.pubsub.getSubscribers('carmel')
+        const subscribers = node.services.pubsub.getSubscribers('carmel')
         const meshPeers = node.services.pubsub.getPeers()
-        // console.log("subscribers", subscribers.length)
 
         if (!peers || peers.length == 0) {
             console.log("no peers yet")
         } else {
             console.log(`${peers.length} peers`)
-            // peers.map((peer: any) => {
-            //     console.log("peer:", peer.toString())
-            // })
+            peers.map((peer: any) => {
+                console.log("peer:", peer.toString())
+            })
         }
 
         if (!meshPeers || meshPeers.length == 0) {
             console.log("no meshPeers yet")
         } else {
             console.log(`${meshPeers.length} pubsub peers`)
-            // meshPeers.map((meshPeer: any) => {
-            //     console.log("meshPeer:", meshPeer.toString())
-            // })
-            // const msg = await node.services.pubsub.publish('carmel', fromString('test'))
-            // console.log('sent msg')
+            meshPeers.map((meshPeer: any) => {
+                console.log("meshPeer:", meshPeer.toString())
+            })
+        }
+
+        if (subscribers && subscribers.length > 0) {
+            await node.services.pubsub.publish('carmel', `hello from sentinel ${node.peerId.toString()}`)
+            console.log(`sent message to ${subscribers.length} subscribers`)
         }
 
         await checkPeers(node)
@@ -117,24 +119,10 @@ export const start = async () => {
 
     console.log(`node started with id ${node.peerId.toString()}`)
 
-    // node.services.pubsub.subscribe('carmel')
-    // node.services.pubsub.addEventListener('message', async  (e: any) => {
-    //     console.log("got message", e.detail)
-    // })
-
-    // node.addEventListener('self:peer:update', (evt: any) => {
-    //     console.log(evt.detail)
-    // })
-
-    // const conn = await node.dial(multiaddr(relays[0]))
-    // console.log(`Connected to the relay ${conn.remotePeer.toString()}`)
-
     node.services.pubsub.subscribe('carmel')  
     node.services.pubsub.addEventListener('message', (message: any) => {
         console.log(`${message.detail.topic}:`, new TextDecoder().decode(message.detail.data))
     })
-
-    // node.services.pubsub.publish('fruit', new TextEncoder().encode('banana'))
 
     node.addEventListener('self:peer:update', (evt) => {
         // Updated self multiaddrs?
