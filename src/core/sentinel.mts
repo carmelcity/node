@@ -63,7 +63,7 @@ const checkPeers = async (node: any) => {
         }
 
         if (subscribers && subscribers.length > 0) {
-            await node.services.pubsub.publish('carmel', `hello from sentinel ${node.peerId.toString()}`)
+            await node.services.pubsub.publish('carmel', new TextEncoder().encode(`hello from sentinel ${node.peerId.toString()}`))
             console.log(`sent message to ${subscribers.length} subscribers`)
         }
 
@@ -121,7 +121,7 @@ export const start = async () => {
 
     node.services.pubsub.subscribe('carmel')  
     node.services.pubsub.addEventListener('message', (message: any) => {
-        console.log(`${message.detail.topic}:`, new TextDecoder().decode(message.detail.data))
+        console.log(`[${message.detail.topic}]:`, new TextDecoder().decode(message.detail.data))
     })
 
     node.addEventListener('self:peer:update', (evt) => {
