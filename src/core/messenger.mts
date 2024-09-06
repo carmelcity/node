@@ -1,5 +1,14 @@
-import { addToCollection, getState } from "../data/db.mts"
 import { logger } from "src/utils/main.mts"
+import { updateSwarmPeer } from "./session.mts"
+
+const onSwarmPresenceReceived = async (message: any) => {
+    const { senderId, senderType } = message
+
+    return updateSwarmPeer(senderId, {
+        peerId: senderId,
+        nodeType: senderType
+    })
+}
 
 export const broadcastSwarmPresence = async (node: any, nodeType: string = "sentinel") => {
     const msg =  {
@@ -49,13 +58,11 @@ export const onMessageReceived = (node: any, nodeType: string = "sentinel") => (
     const dataString = new TextDecoder().decode(detail.data)
     const data = JSON.parse(dataString)
 
-    const { senderId, senderType, messageType, timestamp } = data
-    logger(`got [${topic}] message (senderId=${senderId} senderType=${senderType} messageType=${messageType})`, 'messenger')
+    const { senderId, senderType, messageType, channel } = data 
+    logger(`got [${topic}] message (channel=${channel} senderId=${senderId} senderType=${senderType} messageType=${messageType})`, 'messenger')
 
-    // switch(messageType) {
-    //     case "pong":
-    //         return respondWithPing(node, nodeType, senderId)
-    //     case "ping":
-    //         return acknowledgePing(node, nodeType, senderId)
-    // }
+    if (channel == "swarm" && messageType == "present") {
+        return onSwarmPresenceReceived(node, nodeType, data)
+    }
 }
+ 

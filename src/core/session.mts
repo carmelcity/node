@@ -38,28 +38,27 @@ export const getSwarmPeer = (peerId: string) => {
     return swarm[peerId]
 }
 
-export const updateSwarmPeer = (peerId: string, data: any = { }) => {
-    let peer = getSwarmPeer(peerId)
-
-    if (!peer) {
-        logger(`${peerId} is not part of the swarm`, 'session')
-    }
-
-    const lastUpdate = `${Date.now()}`
-
-    swarm[peerId] = { ...peer, ...data, lastUpdate }
-}
-
-export const addPeerToSwarm = (peerId: string, nodeType: string = 'sentinel') => {
+export const addPeerToSwarm = (peerId: string, data: any = {}) => {
     if (getSwarmPeer(peerId)) {
         logger(`${peerId} is already part of the swarm`, 'session')
         return 
     }
 
     const since = `${Date.now()}`
-    swarm[peerId] = ({ peerId, since, nodeType })
+    swarm[peerId] = ({ peerId, since, ...data })
+}
 
-    logger(`added ${peerId} to the swarm`, 'session')
+export const updateSwarmPeer = (peerId: string, data: any = { }) => {
+    let peer = getSwarmPeer(peerId)
+
+    if (!peer) {
+        return addPeerToSwarm(peerId, data)
+    }
+
+    const lastUpdate = `${Date.now()}`
+    swarm[peerId] = { ...peer, ...data, lastUpdate }
+
+    logger(`updated swarm peer ${peerId} (new swarm size: ${Object.keys(swarm).length})`, 'session')
 }
 
 export const removePeerFromSwarm = (peerId: string) => {
