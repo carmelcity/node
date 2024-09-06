@@ -1,46 +1,47 @@
 import { addToCollection, getState } from "../data/db.mts"
 import { logger } from "src/utils/main.mts"
 
-export const broadcastPong = async (node: any, nodeType: string = "sentinel") => {
-    const pong =  {
+export const broadcastSwarmPresence = async (node: any, nodeType: string = "sentinel") => {
+    const msg =  {
         senderId: `${node.peerId}`,
         senderType: nodeType,
         timestamp: `${Date.now()}`,
-        messageType: "pong"
+        channel: "swarm",
+        messageType: "present"
     }
 
-    await node.services.pubsub.publish('carmel:sync', new TextEncoder().encode(JSON.stringify(pong)))
-    logger('broadcasted pong', 'messenger')
+    await node.services.pubsub.publish('carmel:swarm', new TextEncoder().encode(JSON.stringify(msg)))
+    logger('broadcasted swarm presence', 'messenger')
 }
 
-export const respondWithPing = async (node: any, nodeType: string, peerId: string) => {
-    const ping =  {
-        senderId: `${node.peerId}`,
-        senderType: nodeType,
-        timestamp: `${Date.now()}`,
-        messageType: "ping"
-    }
+// export const respondWithPing = async (node: any, nodeType: string, peerId: string) => {
+//     const ping =  {
+//         senderId: `${node.peerId}`,
+//         senderType: nodeType,
+//         timestamp: `${Date.now()}`,
+//         messageType: "ping"
+//     }
 
-    node.services.pubsub.subscribe(`carmel:${peerId}`)  
-    await node.services.pubsub.publish('carmel:sync', new TextEncoder().encode(JSON.stringify(ping)))
+//     node.services.pubsub.subscribe(`carmel:${peerId}`)  
+//     await node.services.pubsub.publish('carmel:sync', new TextEncoder().encode(JSON.stringify(ping)))
 
-    logger(`send ping back to ${peerId}`, 'messenger')
-}
+//     logger(`send ping back to ${peerId}`, 'messenger')
+// }
 
 
-export const acknowledgePing = async (node: any, nodeType: string, peerId: string) => {
-    const ping =  {
-        senderId: `${node.peerId}`,
-        senderType: nodeType,
-        timestamp: `${Date.now()}`,
-        messageType: "ackping"
-    }
+// export const acknowledgePing = async (node: any, nodeType: string, peerId: string) => {
+//     const ping =  {
+//         senderId: `${node.peerId}`,
+//         senderType: nodeType,
+//         timestamp: `${Date.now()}`,
+//         messageType: "ackping"
+//     }
 
-    node.services.pubsub.subscribe(`carmel:${peerId}`)  
-    await node.services.pubsub.publish('carmel:sync', new TextEncoder().encode(JSON.stringify(ping)))
+//     node.services.pubsub.subscribe(`carmel:${peerId}`)  
+//     await node.services.pubsub.publish('carmel:sync', new TextEncoder().encode(JSON.stringify(ping)))
 
-    logger(`acknowledged ping from ${peerId}`, 'messenger')
-}
+//     logger(`acknowledged ping from ${peerId}`, 'messenger')
+// }
 
 export const onMessageReceived = (node: any, nodeType: string = "sentinel") => (message: any) => {
     const { detail } = message
@@ -51,10 +52,10 @@ export const onMessageReceived = (node: any, nodeType: string = "sentinel") => (
     const { senderId, senderType, messageType, timestamp } = data
     logger(`got [${topic}] message (senderId=${senderId} senderType=${senderType} messageType=${messageType})`, 'messenger')
 
-    switch(messageType) {
-        case "pong":
-            return respondWithPing(node, nodeType, senderId)
-        case "ping":
-            return acknowledgePing(node, nodeType, senderId)
-    }
+    // switch(messageType) {
+    //     case "pong":
+    //         return respondWithPing(node, nodeType, senderId)
+    //     case "ping":
+    //         return acknowledgePing(node, nodeType, senderId)
+    // }
 }
