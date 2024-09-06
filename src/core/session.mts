@@ -82,7 +82,7 @@ export const removePeerFromSwarm = (peerId: string) => {
     logger(`remove ${peerId} from the swarm`, 'session')
 }
 
-export const startSession = async (node: any, nodeType: string) => {
+export const startSession = async (node: any, nodeType: string = "sentinel") => {
     node.services.pubsub.subscribe(`carmel:swarm`)  
     node.services.pubsub.subscribe(`carmel:swarm:${node.peerId}`)  
 
