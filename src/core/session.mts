@@ -13,8 +13,12 @@ const nextTick = async (node: any, nodeType: string) => {
     
     if (swarmers && swarmers.length > 0) {
         await broadcastSwarmPresence(node, nodeType)
+    } else {
+        logger(`the swarm is empty`)
     }
 
+    console.log(swarm)
+    
     setTimeout(async () => {
         await nextTick(node, nodeType)
     }, TICK_TIME_SEC * 1000)
