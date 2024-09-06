@@ -1,4 +1,5 @@
 import { onRelayMessageReceived, onSentinelMessageReceived, sendRelayMessage, sendSentinelMessage } from 'src/core/messenger.mts'
+import { db } from '../data/index.mts'
 
 const TICK_TIME_SEC = 5
 
@@ -44,6 +45,8 @@ export const startRelaySession = async (node: any) => {
     node.services.pubsub.subscribe('carmel')  
     node.services.pubsub.addEventListener('message', onRelayMessageReceived)
 
+    await db.initialize()
+
     node.addEventListener('peer:discovery', (evt: any) => {
         console.log("relay discovered new peer", evt.detail)
     })
@@ -60,8 +63,10 @@ export const startRelaySession = async (node: any) => {
 }
 
 export const startSentinelSession = async (node: any) => {
-    node.services.pubsub.subscribe('carmel')  
+    node.services.pubsub.subscribe('carmel:sync')  
     node.services.pubsub.addEventListener('message', onSentinelMessageReceived)
+    
+    await db.initialize()
 
     node.addEventListener('peer:discovery', (evt: any) => {
         console.log("sentinel discovered new peer", evt.detail)

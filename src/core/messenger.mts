@@ -1,14 +1,27 @@
+import { addToCollection, getState } from "../data/db.mts"
+
 export const sendRelayMessage = async (node: any, message: any) => {
-    await node.services.pubsub.publish('carmel', new TextEncoder().encode(JSON.stringify({ 
-        ...message, 
+    const msg =  { ...message, 
         senderId: `${node.peerId}`,
-        senderType: 'relay' 
-    })))
+        senderType: 'relay'
+    }
+
+    // await addSentinalMessage(msg)
+    // await node.services.pubsub.publish('carmel', new TextEncoder().encode(JSON.stringify(msg)))
 }
 
 export const sendSentinelMessage = async (node: any, message: any) => {
-    await node.services.pubsub.publish('carmel', new TextEncoder().encode(JSON.stringify({
+    const msg =  { ...message, 
+        senderId: `${node.peerId}`,
+        senderType: 'relay'
+    }
+
+    await addToCollection(msg, 'messages')
+    const state = getState()
+
+    await node.services.pubsub.publish('carmel:sync', new TextEncoder().encode(JSON.stringify({
         ...message, 
+        state,
         senderId: `${node.peerId}`,
         senderType: 'sentinel' 
     })))
