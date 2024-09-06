@@ -6,23 +6,23 @@ const TICK_TIME_SEC = 5
 
 export let swarm: any = {}
 
-const nextTick = async (node: any, nodeType: string) => {
-    // const { peers, pubsubPeers, subscribers } = await nodeStatus(node, nodeType)
+// const nextTick = async (node: any, nodeType: string) => {
+//     // const { peers, pubsubPeers, subscribers } = await nodeStatus(node, nodeType)
     
-    const swarmers = node.services.pubsub.getSubscribers('carmel:swarm')
+//     const swarmers = node.services.pubsub.getSubscribers('carmel:swarm')
     
-    if (swarmers && swarmers.length > 0) {
-        await broadcastSwarmPresence(node, nodeType)
-    } else {
-        logger(`the swarm is empty`)
-    }
+//     if (swarmers && swarmers.length > 0) {
+//         await broadcastSwarmPresence(node, nodeType)
+//     } else {
+//         logger(`the swarm is empty`)
+//     }
 
-    console.log(swarm)
+//     console.log(swarm)
     
-    setTimeout(async () => {
-        await nextTick(node, nodeType)
-    }, TICK_TIME_SEC * 1000)
-}
+//     setTimeout(async () => {
+//         await nextTick(node, nodeType)
+//     }, TICK_TIME_SEC * 1000)
+// }
 
 // export const nodeStatus = async (node: any, nodeType: string) => {
 //     const peers = node.getPeers()
@@ -84,5 +84,6 @@ export const startSession = async (node: any, nodeType: string = "sentinel") => 
     
     await db.initialize()
 
-    await nextTick(node, nodeType)
+    // tell everyone we're here
+    await broadcastSwarmPresence(node, nodeType)
 }
