@@ -6,7 +6,7 @@ const TICK_TIME_SEC = 5
 export const nodeStatus = async (node: any) => {
     const peers = node.getPeers()
     const pubsubPeers = node.services.pubsub.getPeers()
-    const subscribers = node.services.pubsub.getSubscribers('carmel')
+    const subscribers = node.services.pubsub.getSubscribers('carmel:sync')
 
     return {
         pubsubPeers, peers, subscribers
@@ -42,7 +42,7 @@ const nextSentinelTick = async (node: any) => {
 }
 
 export const startRelaySession = async (node: any) => {
-    node.services.pubsub.subscribe('carmel')  
+    node.services.pubsub.subscribe('carmel:sync')  
     node.services.pubsub.addEventListener('message', onRelayMessageReceived)
 
     await db.initialize()
