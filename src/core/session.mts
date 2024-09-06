@@ -2,41 +2,28 @@ import { onMessageReceived, broadcastSwarmPresence } from '../core/messenger.mts
 import { db } from '../data/index.mts'
 import { logger } from 'src/utils/main.mts'
 
-const TICK_TIME_SEC = 5
+const TICK_TIME_SEC = 10
 
 export let swarm: any = {}
 
-// const nextTick = async (node: any, nodeType: string) => {
-//     // const { peers, pubsubPeers, subscribers } = await nodeStatus(node, nodeType)
+const pruneSwarm = async () => {
+    const peerIds = Object.keys(swarm)
+
+    logger(`pruned swarm (new size ${peerIds.length})`, 'session')
+}
+
+const nextTick = async (node: any, nodeType: string) => {    
+    const swarmers = node.services.pubsub.getSubscribers('carmel:swarm')
     
-//     const swarmers = node.services.pubsub.getSubscribers('carmel:swarm')
-    
-//     if (swarmers && swarmers.length > 0) {
-//         await broadcastSwarmPresence(node, nodeType)
-//     } else {
-//         logger(`the swarm is empty`)
-//     }
+    if (swarmers && swarmers.length > 0) {
+        await broadcastSwarmPresence(node, nodeType)
+        await pruneSwarm()
+    }
 
-//     console.log(swarm)
-    
-//     setTimeout(async () => {
-//         await nextTick(node, nodeType)
-//     }, TICK_TIME_SEC * 1000)
-// }
-
-// export const nodeStatus = async (node: any, nodeType: string) => {
-//     const peers = node.getPeers()
-//     const pubsubPeers = node.services.pubsub.getPeers()
-
-//     const subscribers = {
-//         sync: node.services.pubsub.getSubscribers('carmel:swarm'),
-//         me:  node.services.pubsub.getSubscribers(`carmel:swarm:${node.peerId}`)
-//     }
-
-//     return {
-//         pubsubPeers, peers, subscribers
-//     }
-// }
+    setTimeout(async () => {
+        await nextTick(node, nodeType)
+    }, TICK_TIME_SEC * 1000)
+}
 
 export const getSwarmPeer = (peerId: string) => {
     return swarm[peerId]
@@ -52,7 +39,7 @@ export const addPeerToSwarm = (peerId: string, data: any = {}) => {
     swarm[peerId] = ({ peerId, since, ...data })
 }
 
-export const updateSwarmPeer = (peerId: string, data: any = { }) => {
+export const updateSwarmPeer = async (peerId: string, data: any = { }) => {
     let peer = getSwarmPeer(peerId)
 
     if (!peer) {
@@ -84,6 +71,5 @@ export const startSession = async (node: any, nodeType: string = "sentinel") => 
     
     await db.initialize()
 
-    // tell everyone we're here
-    await broadcastSwarmPresence(node, nodeType)
+    await nextTick(node, nodeType)
 }

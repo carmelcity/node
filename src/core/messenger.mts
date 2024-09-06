@@ -1,5 +1,6 @@
 import { logger } from "src/utils/main.mts"
 import { updateSwarmPeer } from "./session.mts"
+import { getState } from "../data/db.mts"
 
 export const broadcastSwarmPresence = async (node: any, nodeType: string = "sentinel") => {
     const msg =  {
@@ -14,15 +15,42 @@ export const broadcastSwarmPresence = async (node: any, nodeType: string = "sent
     logger('broadcasted swarm presence', 'messenger')
 }
 
+export const syncSwarmPeer = async (node: any, nodeType: string = "sentinel", peerId: string) => {
+    const state = await getState()
+    const msg =  {
+        senderId: `${node.peerId}`,
+        senderType: nodeType,
+        timestamp: `${Date.now()}`,
+        channel: "swarm",
+        peerId,
+        messageType: "sync",
+        data: { state }
+    }
+
+    await node.services.pubsub.publish(`carmel:swarm:${peerId}`, new TextEncoder().encode(JSON.stringify(msg)))
+    logger(`synced swarm peer ${peerId}`, 'messenger')
+}
 
 const onSwarmPresenceReceived = async (node: any, nodeType: string, message: any) => {
     const { senderId, senderType } = message
 
-    await broadcastSwarmPresence(node, nodeType)
-    return updateSwarmPeer(senderId, {
+    await updateSwarmPeer(senderId, {
         peerId: senderId,
-        nodeType: senderType
+        nodeType: senderType,
+        status: "new"
     })
+
+    return syncSwarmPeer(node, nodeType, senderId)
+}
+
+const onSwarmPeerSyncReceived = async (node: any, nodeType: string, message: any) => {
+    const { senderId, senderType } = message
+
+    // await broadcastSwarmPresence(node, nodeType)
+    // return updateSwarmPeer(senderId, {
+    //     peerId: senderId,
+    //     nodeType: senderType
+    // })
 }
 
 // export const respondWithPing = async (node: any, nodeType: string, peerId: string) => {
@@ -65,6 +93,10 @@ export const onMessageReceived = (node: any, nodeType: string = "sentinel") => (
 
     if (channel == "swarm" && messageType == "present") {
         return onSwarmPresenceReceived(node, nodeType, data)
+    }
+
+    if (channel == "swarm" && messageType == "sync") {
+        return onSwarmPeerSyncReceived(node, nodeType, data)
     }
 }
  
