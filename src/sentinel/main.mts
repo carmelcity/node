@@ -2,7 +2,7 @@ import path from 'path'
 import dotenv from 'dotenv'
 import { makeSentinelNode } from 'src/core/libp2p.mts'
 import { getPeerId, logger } from '../utils/main.mjs'
-import { startSentinelSession } from 'src/index.mts'
+import { startSession } from 'src/index.mts'
 
 const CARMEL_HOME = `${process.env.CARMEL_HOME}`
 
@@ -39,5 +39,5 @@ export const start = async () => {
     logger(`sentinel started with id ${node.peerId.toString()}`)
 
     // start the session
-    await startSentinelSession(node)
+    await startSession(node)
 }
