@@ -1,8 +1,8 @@
-import { onMessageReceived, broadcastSwarmPresence } from '../core/messenger.mts'
 import { db } from '../data/index.mts'
 import { logger } from 'src/utils/main.mts'
+import { onMessageReceived, broadcastSwarmPresence } from '../core/messenger.mts'
 
-const TICK_TIME_SEC = 10
+const TICK_TIME_SEC = 12
 
 export let swarm: any = {}
 
@@ -10,6 +10,10 @@ const pruneSwarm = async () => {
     const peerIds = Object.keys(swarm)
 
     logger(`pruned swarm (new size ${peerIds.length})`, 'session')
+
+    peerIds.map((peer: any) => {
+        console.log(peer)
+    })
 }
 
 const nextTick = async (node: any, nodeType: string) => {    
@@ -65,7 +69,6 @@ export const removePeerFromSwarm = (peerId: string) => {
 
 export const startSession = async (node: any, nodeType: string = "sentinel") => {
     node.services.pubsub.subscribe(`carmel:swarm`)  
-    node.services.pubsub.subscribe(`carmel:swarm:${node.peerId}`)  
 
     node.services.pubsub.addEventListener('message', onMessageReceived(node, nodeType))
     
