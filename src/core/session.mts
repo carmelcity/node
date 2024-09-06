@@ -1,4 +1,4 @@
-import { onMessageReceived, broadcastPong } from 'src/core/messenger.mts'
+import { onMessageReceived, broadcastSwarmPresence } from '../core/messenger.mts'
 import { db } from '../data/index.mts'
 import { logger } from 'src/utils/main.mts'
 
@@ -12,17 +12,8 @@ const nextTick = async (node: any, nodeType: string) => {
     const swarmers = node.services.pubsub.getSubscribers('carmel:swarm')
     
     if (swarmers && swarmers.length > 0) {
-        console.log(swarmers)
-        // await broadcastPong(node, nodeType)
+        await broadcastSwarmPresence(node, nodeType)
     }
-
-    // if (subscribers && subscribers.sync && subscribers.sync.length > 0) {
-    // }
-
-    // if (subscribers && subscribers.me && subscribers.me.length > 0) {
-        // logger(`${subscribers.me.length} nodes listening to me`)
-        // await broadcastPong(node, nodeType)
-    // }
 
     setTimeout(async () => {
         await nextTick(node, nodeType)
