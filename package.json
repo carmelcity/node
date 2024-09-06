@@ -16,6 +16,7 @@
         "@chainsafe/libp2p-gossipsub": "^13.2.0",
         "@chainsafe/libp2p-noise": "^15.1.1",
         "@chainsafe/libp2p-yamux": "^6.0.2",
+        "@electric-sql/pglite": "^0.2.5",
         "@libp2p/bootstrap": "^10.1.5",
         "@libp2p/circuit-relay-v2": "^1.1.5",
         "@libp2p/floodsub": "^9.1.5",
@@ -35,10 +36,12 @@
         "figlet": "^1.7.0",
         "fs-extra": "^11.2.0",
         "helia": "^4.2.5",
+        "js-base64": "^3.7.7",
         "libp2p": "^1.9.2",
         "lowdb": "^7.0.1",
         "nanoid": "^5.0.7",
-        "uint8arrays": "^5.1.0"
+        "uint8arrays": "^5.1.0",
+        "yjs": "^13.6.18"
     },
     "devDependencies": {
         "@swc-node/register": "^1.10.9",
