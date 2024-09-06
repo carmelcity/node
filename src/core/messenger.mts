@@ -62,7 +62,7 @@ export const onMessageReceived = (node: any, nodeType: string = "sentinel") => (
     logger(`got [${topic}] message (channel=${channel} senderId=${senderId} senderType=${senderType} messageType=${messageType})`, 'messenger')
 
     if (channel == "swarm" && messageType == "present") {
-        return onSwarmPresenceReceived(node, nodeType, data)
+        return onSwarmPresenceReceived(data)
     }
 }
  
