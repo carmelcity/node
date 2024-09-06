@@ -22,12 +22,11 @@ export const syncSwarmPeer = async (node: any, nodeType: string = "sentinel", pe
         senderType: nodeType,
         timestamp: `${Date.now()}`,
         channel: "swarm",
-        peerId,
         messageType: "sync",
-        data: { state }
+        data: { state, peerId }
     }
 
-    await node.services.pubsub.publish(`carmel:swarm:${peerId}`, new TextEncoder().encode(JSON.stringify(msg)))
+    await node.services.pubsub.publish(`carmel:swarm`, new TextEncoder().encode(JSON.stringify(msg)))
     logger(`synced swarm peer ${peerId}`, 'messenger')
 }
 
@@ -46,41 +45,14 @@ const onSwarmPresenceReceived = async (node: any, nodeType: string, message: any
 const onSwarmPeerSyncReceived = async (node: any, nodeType: string, message: any) => {
     const { senderId, senderType } = message
 
+    console.log(message)
+    
     // await broadcastSwarmPresence(node, nodeType)
     // return updateSwarmPeer(senderId, {
     //     peerId: senderId,
     //     nodeType: senderType
     // })
 }
-
-// export const respondWithPing = async (node: any, nodeType: string, peerId: string) => {
-//     const ping =  {
-//         senderId: `${node.peerId}`,
-//         senderType: nodeType,
-//         timestamp: `${Date.now()}`,
-//         messageType: "ping"
-//     }
-
-//     node.services.pubsub.subscribe(`carmel:${peerId}`)  
-//     await node.services.pubsub.publish('carmel:sync', new TextEncoder().encode(JSON.stringify(ping)))
-
-//     logger(`send ping back to ${peerId}`, 'messenger')
-// }
-
-
-// export const acknowledgePing = async (node: any, nodeType: string, peerId: string) => {
-//     const ping =  {
-//         senderId: `${node.peerId}`,
-//         senderType: nodeType,
-//         timestamp: `${Date.now()}`,
-//         messageType: "ackping"
-//     }
-
-//     node.services.pubsub.subscribe(`carmel:${peerId}`)  
-//     await node.services.pubsub.publish('carmel:sync', new TextEncoder().encode(JSON.stringify(ping)))
-
-//     logger(`acknowledged ping from ${peerId}`, 'messenger')
-// }
 
 export const onMessageReceived = (node: any, nodeType: string = "sentinel") => (message: any) => {
     const { detail } = message
