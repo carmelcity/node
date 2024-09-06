@@ -47,12 +47,12 @@ export let addToCollection = async (msg: any, col: string) => {
    logger(`added a new element to [${col}] (new total ${messages.length})`, 'db')
 }
 
-export const getState = () => {
+export const getState = async () => {
     const state = Y.encodeStateAsUpdate(main)
     const stateBase64 = fromUint8Array(state)
     const timestamp = `${Date.now()}`
 
-    return { stateBase64, timestamp }
+    return { main: stateBase64, timestamp }
 }
 
 export let saveDb = async () => {
