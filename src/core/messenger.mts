@@ -1,15 +1,6 @@
 import { logger } from "src/utils/main.mts"
 import { updateSwarmPeer } from "./session.mts"
 
-const onSwarmPresenceReceived = async (message: any) => {
-    const { senderId, senderType } = message
-
-    return updateSwarmPeer(senderId, {
-        peerId: senderId,
-        nodeType: senderType
-    })
-}
-
 export const broadcastSwarmPresence = async (node: any, nodeType: string = "sentinel") => {
     const msg =  {
         senderId: `${node.peerId}`,
@@ -21,6 +12,17 @@ export const broadcastSwarmPresence = async (node: any, nodeType: string = "sent
 
     await node.services.pubsub.publish('carmel:swarm', new TextEncoder().encode(JSON.stringify(msg)))
     logger('broadcasted swarm presence', 'messenger')
+}
+
+
+const onSwarmPresenceReceived = async (node: any, nodeType: string, message: any) => {
+    const { senderId, senderType } = message
+
+    await broadcastSwarmPresence(node, nodeType)
+    return updateSwarmPeer(senderId, {
+        peerId: senderId,
+        nodeType: senderType
+    })
 }
 
 // export const respondWithPing = async (node: any, nodeType: string, peerId: string) => {
@@ -62,7 +64,7 @@ export const onMessageReceived = (node: any, nodeType: string = "sentinel") => (
     logger(`got [${topic}] message (channel=${channel} senderId=${senderId} senderType=${senderType} messageType=${messageType})`, 'messenger')
 
     if (channel == "swarm" && messageType == "present") {
-        return onSwarmPresenceReceived(data)
+        return onSwarmPresenceReceived(node, nodeType, data)
     }
 }
  
