@@ -39,8 +39,9 @@ export const makeRelayNode = async ({
 })
 
 export const makeSentinelNode = async ({
-    peerId, relays
+    peerId, relays, datastore
 }: any) => createLibp2p({
+    datastore,
     peerId,
     addresses: {
         listen: [

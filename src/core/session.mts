@@ -9,15 +9,15 @@ export let swarm: any = {}
 const pruneSwarm = async () => {
     const peerIds = Object.keys(swarm)
 
-    logger(`pruned swarm (new size ${peerIds.length})`, 'session')
+    logger(`✓ pruned swarm (new size ${peerIds.length})`, 'session')
 
-    peerIds.map((peer: any) => {
-        console.log(peer)
+    peerIds.map((peerId: any) => {
+        console.log(swarm[peerId])
     })
 }
 
 const nextTick = async (node: any, nodeType: string) => {    
-    const swarmers = node.services.pubsub.getSubscribers('carmel:swarm')
+    const swarmers = node.libp2p.services.pubsub.getSubscribers('carmel:swarm')
     
     if (swarmers && swarmers.length > 0) {
         await broadcastSwarmPresence(node, nodeType)
@@ -53,7 +53,7 @@ export const updateSwarmPeer = async (peerId: string, data: any = { }) => {
     const lastUpdate = `${Date.now()}`
     swarm[peerId] = { ...peer, ...data, lastUpdate }
 
-    logger(`updated swarm peer ${peerId} (new swarm size: ${Object.keys(swarm).length})`, 'session')
+    logger(`✓ updated swarm peer ${peerId} (new swarm size: ${Object.keys(swarm).length})`, 'session')
 }
 
 export const removePeerFromSwarm = (peerId: string) => {
@@ -64,13 +64,12 @@ export const removePeerFromSwarm = (peerId: string) => {
 
     delete swarm[peerId]
 
-    logger(`remove ${peerId} from the swarm`, 'session')
+    logger(`✓ removed ${peerId} from the swarm`, 'session')
 }
 
 export const startSession = async (node: any, nodeType: string = "sentinel") => {
-    node.services.pubsub.subscribe(`carmel:swarm`)  
-
-    node.services.pubsub.addEventListener('message', onMessageReceived(node, nodeType))
+    node.libp2p.services.pubsub.subscribe(`carmel:swarm`)  
+    node.libp2p.services.pubsub.addEventListener('message', onMessageReceived(node, nodeType))
     
     await db.initialize()
 
