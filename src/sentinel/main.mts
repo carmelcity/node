@@ -4,13 +4,7 @@ import { makeSentinelNode } from 'src/core/libp2p.mts'
 import { getPeerId, logger } from '../utils/main.mjs'
 import { startSession } from 'src/index.mts'
 import { createHelia } from 'helia'
-import { type UnixFS, unixfs } from '@helia/unixfs'
 import { FsBlockstore } from 'blockstore-fs'
-import fs from 'fs-extra'
-import { jsonToCID, cacheFileToCID, jsonToBytes } from '../utils/data.mts'
-import { strings } from '@helia/strings'
-import { CID } from 'multiformats/cid'
-import { sha256 } from 'multiformats/hashes/sha2'
 
 const CARMEL_HOME = `${process.env.CARMEL_HOME}`
 

@@ -1,6 +1,7 @@
 import { unixfs } from "@helia/unixfs"
 import { jsonToBytes } from "../utils/data.mts"
 import { logger } from "../utils/main.mts"
+import { CID } from 'multiformats/cid'
 
 let fs: any = undefined
 let node: any = undefined
@@ -12,27 +13,26 @@ export const initialize = async (n: any) => {
     logger(`initialized ✓`, 'fs')
 }
 
-export const broadcastJSON = async (data: any) => {
+export const putObject = async (data: any) => {
     const cid = await fs.addBytes(jsonToBytes(data))
-
-    // for await (const event of node.libp2p.services.dht.provide(cid)) {
-    //     console.log(event)
-    // }
+    // const cid = await j.add(JSON.stringify(obj));
 
     logger(`sent data (${cid}) ✓`, 'fs')
 
     return cid
 }
 
-export const readRaw = async (cid: any) => {
-    const decoder = new TextDecoder()
-    let text = ''
+export const getObject = async (cid: string) => {
+    // const decoder = new TextDecoder()
+    // let text = ''
 
-    for await (const chunk of fs.cat(cid)) {
-        text += decoder.decode(chunk, {
-            stream: true
-        })
-    }
+    const obj = await fs.get(CID.parse(cid))
 
-    return text
+    // for await (const chunk of fs.cat(cid)) {
+    //     text += decoder.decode(chunk, {
+    //         stream: true
+    //     })
+    // }
+
+    return obj
 }
