@@ -12,7 +12,7 @@ const pruneSwarm = async () => {
     logger(`✓ pruned swarm (new size ${peerIds.length})`, 'session')
 
     peerIds.map((peerId: any) => {
-        console.log(swarm[peerId])
+        logger(`  → peer ${peerId}`, 'session')
     })
 }
 
@@ -23,7 +23,7 @@ const nextTick = async (node: any, nodeType: string) => {
         await broadcastSwarmPresence(node, nodeType)
         await pruneSwarm()
  
-        const cid = await fs.putObject({ now: `${Date.now()}` })
+        const cid = await fs.putObject({ from: `${node.libp2p.peerId}`, now: `${Date.now()}` })
         await broadcastSwarmFile(node, { cid }, nodeType)
     }
 

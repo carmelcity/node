@@ -184,6 +184,18 @@
     multiformats "^13.1.0"
     progress-events "^1.0.0"
 
+"@helia/dag-json@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@helia/dag-json/-/dag-json-3.0.6.tgz#c8408765113d0cda1b187c78a0e95032f5c2361f"
+  integrity sha512-yDFhlGW7pclbm3tk9eRN3ddN9P7JVYAa4FDT8ZP3l3RyAPKjyKZQnxdiCyW2DvUp25YJn7j3Y01ty0k1coNa/A==
+  dependencies:
+    "@helia/interface" "^4.3.1"
+    "@ipld/dag-json" "^10.2.0"
+    "@libp2p/interface" "^1.1.4"
+    interface-blockstore "^5.2.10"
+    multiformats "^13.1.0"
+    progress-events "^1.0.0"
+
 "@helia/delegated-routing-v1-http-api-client@^3.0.0":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@helia/delegated-routing-v1-http-api-client/-/delegated-routing-v1-http-api-client-3.0.1.tgz#284d21a99a8b80707ded3aa2f38ee89ec7895176"
