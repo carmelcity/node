@@ -23,8 +23,7 @@ const nextTick = async (node: any, nodeType: string) => {
         await broadcastSwarmPresence(node, nodeType)
         await pruneSwarm()
  
-        const cid = await fs.putObject({ from: `${node.libp2p.peerId}`, now: `${Date.now()}` })
-        await broadcastSwarmFile(node, { cid }, nodeType)
+        await fs.putJSON({ from: `${node.libp2p.peerId}`, now: `${Date.now()}` })
     }
 
     setTimeout(async () => {
@@ -75,7 +74,7 @@ export const startSession = async (node: any, nodeType: string = "sentinel") => 
     node.libp2p.services.pubsub.addEventListener('message', onMessageReceived(node, nodeType))
     
     await db.initialize()
-    await fs.initialize(node)
+    await fs.initialize(node, nodeType)
 
     await nextTick(node, nodeType)
 }
