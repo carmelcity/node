@@ -13,11 +13,12 @@ dotenv.config({ path: path.resolve(CARMEL_HOME, '.env') })
 let main = new Y.Doc()
 
 const dbRoot = path.resolve(CARMEL_HOME, 'db')
+const cacheRoot = path.resolve(CARMEL_HOME, 'cache')
 const mainDbFile = path.resolve(dbRoot, 'main.db.json')
-// const messagesDbFile = path.resolve(dbRoot, 'messages.json')
 
 export const initialize = async () => {
     fs.existsSync(dbRoot) || fs.mkdirpSync(dbRoot)
+    fs.existsSync(cacheRoot) || fs.mkdirpSync(cacheRoot)
 
     if (!fs.existsSync(mainDbFile)) {
         // first time

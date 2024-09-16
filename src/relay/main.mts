@@ -5,6 +5,8 @@ import { makeRelayNode } from 'src/core/libp2p.mts'
 import { getPeerId, logger } from '../utils/main.mjs'
 import { loadSSL } from './config.mts'
 import { startSession } from 'src/index.mts'
+import { FsBlockstore } from 'blockstore-fs'
+import { createHelia } from 'helia'
 
 const CARMEL_HOME = `${process.env.CARMEL_HOME}`
 
@@ -27,16 +29,22 @@ export const start = async () => {
     
     logger(`starting relay with peerId=${peerId} ...`)
 
-    const node = await makeRelayNode({
+    const libp2p = await makeRelayNode({
         peerId, announce, port, server
     })
 
-    await node.start()
+    await libp2p.start()
+    const blockstore = new FsBlockstore(path.resolve(ipfsRoot, 'blockstore'))
 
-    const listenAddrs = node.getMultiaddrs()
+    const node = await createHelia({
+        libp2p,
+        blockstore
+    })
+
+    const listenAddrs = libp2p.getMultiaddrs()
     
     if (!listenAddrs || listenAddrs.length == 0) {
-        await node.stop()
+        await libp2p.stop()
         logger(`relay could not listen`)
         return 
     }
@@ -45,7 +53,7 @@ export const start = async () => {
         logger(`relay listening on ${addr} ...`)
     })
 
-    logger(`relay started with id ${node.peerId.toString()}`)
+    logger(`relay started with id ${libp2p.peerId.toString()}`)
 
     // start the session
     await startSession(node, 'relay')

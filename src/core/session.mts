@@ -1,4 +1,4 @@
-import { db } from '../data/index.mts'
+import { db, fs } from '../data/index.mts'
 import { logger } from 'src/utils/main.mts'
 import { onMessageReceived, broadcastSwarmPresence } from '../core/messenger.mts'
 
@@ -14,6 +14,8 @@ const pruneSwarm = async () => {
     peerIds.map((peerId: any) => {
         console.log(swarm[peerId])
     })
+
+    await fs.broadcastJSON({ now: `${Date.now()}` })
 }
 
 const nextTick = async (node: any, nodeType: string) => {    
@@ -72,6 +74,7 @@ export const startSession = async (node: any, nodeType: string = "sentinel") => 
     node.libp2p.services.pubsub.addEventListener('message', onMessageReceived(node, nodeType))
     
     await db.initialize()
+    await fs.initialize(node)
 
     await nextTick(node, nodeType)
 }

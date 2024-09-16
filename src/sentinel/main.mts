@@ -4,10 +4,13 @@ import { makeSentinelNode } from 'src/core/libp2p.mts'
 import { getPeerId, logger } from '../utils/main.mjs'
 import { startSession } from 'src/index.mts'
 import { createHelia } from 'helia'
-// import { unixfs } from '@helia/unixfs'
+import { type UnixFS, unixfs } from '@helia/unixfs'
 import { FsBlockstore } from 'blockstore-fs'
-import { FsDatastore } from 'datastore-fs'
 import fs from 'fs-extra'
+import { jsonToCID, cacheFileToCID, jsonToBytes } from '../utils/data.mts'
+import { strings } from '@helia/strings'
+import { CID } from 'multiformats/cid'
+import { sha256 } from 'multiformats/hashes/sha2'
 
 const CARMEL_HOME = `${process.env.CARMEL_HOME}`
 
@@ -38,10 +41,8 @@ export const start = async () => {
     const relays = await getRelays()
     
     const blockstore = new FsBlockstore(path.resolve(ipfsRoot, 'blockstore'))
-    const datastore = new FsDatastore(path.resolve(ipfsRoot, 'datastore'))
 
     const libp2p = await makeSentinelNode({
-        datastore,
         peerId, relays
     })
 
@@ -51,10 +52,9 @@ export const start = async () => {
     
     const node = await createHelia({
         libp2p,
-        blockstore,
-        datastore
+        blockstore
     })
-  
+
     // start the session
     await startSession(node)
 }

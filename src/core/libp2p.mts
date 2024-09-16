@@ -12,6 +12,7 @@ import { bootstrap } from '@libp2p/bootstrap'
 import { webRTC } from '@libp2p/webrtc'
 import { gossipsub } from '@chainsafe/libp2p-gossipsub'
 import { ping } from '@libp2p/ping'
+import { kadDHT } from '@libp2p/kad-dht'
 
 export const makeRelayNode = async ({
     peerId, port, announce, server
@@ -41,7 +42,6 @@ export const makeRelayNode = async ({
 export const makeSentinelNode = async ({
     peerId, relays, datastore
 }: any) => createLibp2p({
-    datastore,
     peerId,
     addresses: {
         listen: [
@@ -66,6 +66,8 @@ export const makeSentinelNode = async ({
     streamMuxers: [mplex(), yamux()],
     services: {
         ping: ping(),
+        dht: kadDHT({
+        }),
         pubsub: gossipsub(),
         identify: identify(),
     },  
