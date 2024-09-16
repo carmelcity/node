@@ -32,7 +32,6 @@ export const broadcastSwarmPeerSync = async (node: any, nodeType: string = "sent
 }
 
 export const broadcastSwarmJSONFile = async (node: any, data: any, nodeType: string = "sentinel") => {
-    const state = await getState()
     const msg =  {
         senderId: `${node.libp2p.peerId}`,
         senderType: nodeType,

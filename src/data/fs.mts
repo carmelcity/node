@@ -20,18 +20,19 @@ export const initialize = async (n: any, nType: string = "sentinel") => {
 }
 
 export const putJSON = async (data: any) => {
-    const cid = await json.add(data)
+    const res = await json.add(data)
+    const cid = res.toString()
 
     logger(`→ sent json (${cid}) ✓`, 'fs')
-
+    
     await broadcastSwarmJSONFile(node, { cid }, nodeType)
 
-    return cid.toString()
+    return cid
 }
 
 export const onJSONReceived = async (message: any) => {
-    logger(`← got json (${message.data.cid}) ✓`, 'fs')
-    const obj = await json.get(CID.parse(message.data.cid));
+    // logger(`← got json (${message.data.cid}) ✓`, 'fs')
+    // const obj = await json.get(CID.parse(message.data.cid));
 
-    console.log(obj)
+    console.log(message)
 }
