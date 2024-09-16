@@ -15,11 +15,10 @@ export const initialize = async (n: any) => {
 
 export const putObject = async (data: any) => {
     const cid = await fs.addBytes(jsonToBytes(data))
-    // const cid = await j.add(JSON.stringify(obj));
 
     logger(`sent data (${cid}) ✓`, 'fs')
 
-    return cid
+    return cid.toString()
 }
 
 export const getObject = async (cid: string) => {
