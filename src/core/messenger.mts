@@ -1,6 +1,7 @@
 import { logger } from "src/utils/main.mts"
 import { getSwarmPeer, updateSwarmPeer } from "./session.mts"
-import { getState, saveDb } from "../data/db.mts"
+import { getState } from "../data/db.mts"
+import { fs } from '../data/index.mts'
 
 export const broadcastSwarmPresence = async (node: any, nodeType: string = "sentinel") => {
     const msg =  {
@@ -45,9 +46,11 @@ export const broadcastSwarmFile = async (node: any, data: any, nodeType: string 
     logger(`✓ broadcasted swarm file`, 'messenger')
 }
 
-const onSwarmFileReceived= async (node: any, nodeType: string, message: any) => {
-    logger(`✓ got swarm file`, 'messenger')
-    console.log(message)
+const onSwarmFileReceived = async (node: any, nodeType: string, message: any) => {
+    logger(`✓ got swarm file ${message.data.cid}`, 'messenger')
+    const object = await fs.getObject(message.data.cid)
+    console.log("!!!! GOT OBJECT")
+    console.log(object)
 }
 
 const onSwarmPresenceReceived = async (node: any, nodeType: string, message: any) => {

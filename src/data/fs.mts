@@ -2,19 +2,22 @@ import { unixfs } from "@helia/unixfs"
 import { jsonToBytes } from "../utils/data.mts"
 import { logger } from "../utils/main.mts"
 import { CID } from 'multiformats/cid'
+import { dagJson } from '@helia/dag-json'
 
 let fs: any = undefined
 let node: any = undefined
+let json: any = undefined
 
 export const initialize = async (n: any) => {
     node = n
     fs = unixfs(node)
+    json = dagJson(node)
 
     logger(`initialized ✓`, 'fs')
 }
 
 export const putObject = async (data: any) => {
-    const cid = await fs.addBytes(jsonToBytes(data))
+    const cid = await json.add(data)
 
     logger(`sent data (${cid}) ✓`, 'fs')
 
@@ -22,16 +25,9 @@ export const putObject = async (data: any) => {
 }
 
 export const getObject = async (cid: string) => {
-    // const decoder = new TextDecoder()
-    // let text = ''
-
-    const obj = await fs.get(CID.parse(cid))
-
-    // for await (const chunk of fs.cat(cid)) {
-    //     text += decoder.decode(chunk, {
-    //         stream: true
-    //     })
-    // }
+    const obj = await json.get(CID.parse(cid));
+   
+    console.log(obj)
 
     return obj
 }
