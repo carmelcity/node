@@ -31,8 +31,9 @@ export const putJSON = async (data: any) => {
 }
 
 export const onJSONReceived = async (message: any) => {
-    // logger(`← got json (${message.data.cid}) ✓`, 'fs')
-    // const obj = await json.get(CID.parse(message.data.cid));
+    logger(`← got1 json (${message.data.cid}) ✓`, 'fs')
+    const obj = await json.get(CID.parse(message.data.cid));
+    logger(`← got2 json (${message.data.cid}) ✓`, 'fs')
 
-    console.log(message)
+    console.log("---", obj)
 }
