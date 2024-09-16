@@ -11,7 +11,7 @@ export const broadcastSwarmPresence = async (node: any, nodeType: string = "sent
         messageType: "present"
     }
 
-    await node.services.pubsub.publish('carmel:swarm', new TextEncoder().encode(JSON.stringify(msg)))
+    await node.libp2p.services.pubsub.publish('carmel:swarm', new TextEncoder().encode(JSON.stringify(msg)))
     logger('✓ broadcasted swarm presence', 'messenger')
 }
 
