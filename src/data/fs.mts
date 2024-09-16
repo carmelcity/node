@@ -15,7 +15,7 @@ export const initialize = async (n: any, nType: string = "sentinel") => {
     fs = unixfs(node)
     json = dagJson(node)
     nodeType = nType
-    
+
     logger(`initialized ✓`, 'fs')
 }
 
@@ -29,10 +29,9 @@ export const putJSON = async (data: any) => {
     return cid.toString()
 }
 
-export const getJSON = async (cid: string) => {
-    const obj = await json.get(CID.parse(cid));
-   
-    logger(`← got json (${cid}) ✓`, 'fs')
+export const onJSONReceived = async (message: any) => {
+    logger(`← got json (${message.data.cid}) ✓`, 'fs')
+    const obj = await json.get(CID.parse(message.data.cid));
 
-    return obj
+    console.log(obj)
 }

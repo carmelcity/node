@@ -46,13 +46,6 @@ export const broadcastSwarmFile = async (node: any, data: any, nodeType: string 
     logger(`✓ broadcasted swarm file`, 'messenger')
 }
 
-const onSwarmFileReceived = async (node: any, nodeType: string, message: any) => {
-    logger(`✓ got swarm file ${message.data.cid}`, 'messenger')
-    const object = await fs.getObject(message.data.cid)
-    console.log("!!!! GOT OBJECT")
-    console.log(object)
-}
-
 const onSwarmPresenceReceived = async (node: any, nodeType: string, message: any) => {
     const { senderId, senderType } = message
 
@@ -103,8 +96,8 @@ export const onMessageReceived = (node: any, nodeType: string = "sentinel") => (
         return onSwarmPeerSyncReceived(node, nodeType, data)
     }
 
-    if (channel == "swarm" && messageType == "file") {
-        return onSwarmFileReceived(node, nodeType, data)
+    if (channel == "swarm" && messageType == "json") {
+        return fs.onJSONReceived(data)
     }
 }
  
