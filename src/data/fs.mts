@@ -15,11 +15,11 @@ export const initialize = async (n: any) => {
 export const broadcastJSON = async (data: any) => {
     const cid = await fs.addBytes(jsonToBytes(data))
 
-    for await (const event of node.libp2p.services.dht.provide(cid)) {
-        console.log(event)
-    }
+    // for await (const event of node.libp2p.services.dht.provide(cid)) {
+    //     console.log(event)
+    // }
 
-    logger(`send data (${cid}) ✓`, 'fs')
+    logger(`sent data (${cid}) ✓`, 'fs')
 
     return cid
 }
