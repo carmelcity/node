@@ -3,7 +3,7 @@ import { jsonToBytes } from "../utils/data.mts"
 import { logger } from "../utils/main.mts"
 import { CID } from 'multiformats/cid'
 import { dagJson } from '@helia/dag-json'
-import { broadcastSwarmFile } from "../core/messenger.mts"
+import { broadcastSwarmJSONFile } from "../core/messenger.mts"
 
 let fs: any = undefined
 let node: any = undefined
@@ -24,7 +24,7 @@ export const putJSON = async (data: any) => {
 
     logger(`→ sent json (${cid}) ✓`, 'fs')
 
-    await broadcastSwarmFile(node, { cid }, nodeType)
+    await broadcastSwarmJSONFile(node, { cid }, nodeType)
 
     return cid.toString()
 }
