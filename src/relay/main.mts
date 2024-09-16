@@ -28,6 +28,7 @@ export const start = async () => {
     const announce = [`/dns4/${domain}/tcp/${port}/wss/p2p/${peerId}`]
     
     logger(`starting relay with peerId=${peerId} ...`)
+    const ipfsRoot = path.resolve(CARMEL_HOME, 'ipfs')
 
     const libp2p = await makeRelayNode({
         peerId, announce, port, server
