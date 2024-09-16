@@ -1,6 +1,6 @@
 import { db, fs } from '../data/index.mts'
 import { logger } from 'src/utils/main.mts'
-import { onMessageReceived, broadcastSwarmPresence, broadcastSwarmFile } from '../core/messenger.mts'
+import { onMessageReceived, broadcastSwarmPresence } from '../core/messenger.mts'
 
 const TICK_TIME_SEC = 12
 
