@@ -11,7 +11,12 @@ const start = async () => {
     const CARMEL_NODE_TYPE = `${process.env.CARMEL_NODE_TYPE}`
    
     const ipfsRoot = path.resolve(CARMEL_HOME, 'ipfs')
+    const blockstoreRoot = path.resolve(ipfsRoot, 'blockstore')
+    const datastoreRoot = path.resolve(ipfsRoot, 'datastore')
+
     fs.existsSync(ipfsRoot) || fs.mkdirpSync(ipfsRoot)
+    fs.existsSync(datastoreRoot) || fs.mkdirpSync(datastoreRoot)
+    fs.existsSync(blockstoreRoot) || fs.mkdirpSync(blockstoreRoot)
 
     switch(CARMEL_NODE_TYPE) {
         case "relay":

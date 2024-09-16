@@ -232,6 +232,18 @@
     multiformats "^13.1.0"
     uint8arrays "^5.0.2"
 
+"@helia/strings@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@helia/strings/-/strings-3.0.5.tgz#22349d8c0d58fd944c7ec398aa7ef031b31b9943"
+  integrity sha512-TH2o50P5SQpBKR805joquvDWOQombJnf2VVhd1Mh8Xjd/n4YIq/aReWZqs7yPNmwZ6w1UBfzoZe5azuQoE3nEw==
+  dependencies:
+    "@helia/interface" "^4.3.1"
+    "@libp2p/interfaces" "^3.3.2"
+    interface-blockstore "^5.2.10"
+    multiformats "^13.1.0"
+    progress-events "^1.0.0"
+    uint8arrays "^5.0.2"
+
 "@helia/unixfs@^3.0.7":
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/@helia/unixfs/-/unixfs-3.0.7.tgz#11383428499675343c44720301d2841a8668a2e3"
@@ -451,6 +463,11 @@
     multiformats "^13.1.0"
     progress-events "^1.0.0"
     uint8arraylist "^2.4.8"
+
+"@libp2p/interfaces@^3.3.2":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@libp2p/interfaces/-/interfaces-3.3.2.tgz#5d8079be845b0960939b5b18880e785a4714465a"
+  integrity sha512-p/M7plbrxLzuQchvNwww1Was7ZeGE2NaOFulMaZBYIihU8z3fhaV+a033OqnC/0NTX/yhfdNOG7znhYq3XoR/g==
 
 "@libp2p/kad-dht@^12.0.8", "@libp2p/kad-dht@^12.1.5":
   version "12.1.5"
@@ -2574,6 +2591,11 @@ uint8-varint@^2.0.1, uint8-varint@^2.0.2, uint8-varint@^2.0.3, uint8-varint@^2.0
   dependencies:
     uint8arraylist "^2.0.0"
     uint8arrays "^5.0.0"
+
+uint8array-extras@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/uint8array-extras/-/uint8array-extras-1.4.0.tgz#e42a678a6dd335ec2d21661333ed42f44ae7cc74"
+  integrity sha512-ZPtzy0hu4cZjv3z5NW9gfKnNLjoz4y6uv4HlelAjDK7sY/xOkKZv9xK/WQpcsBB3jEybChz9DPC2U/+cusjJVQ==
 
 uint8arraylist@^2.0.0, uint8arraylist@^2.4.3, uint8arraylist@^2.4.8:
   version "2.4.8"
