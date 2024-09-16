@@ -47,7 +47,8 @@ export const broadcastSwarmFile = async (node: any, data: any, nodeType: string 
 
 const onSwarmPresenceReceived = async (node: any, nodeType: string, message: any) => {
     const { senderId, senderType } = message
-    logger(`✓ got swarm file ${message.data.cid}`, 'messenger')
+    logger(`✓ got swarm file`, 'messenger')
+    console.log(message)
 }
 
 const onSwarmFileReceived = async (node: any, nodeType: string, message: any) => {
