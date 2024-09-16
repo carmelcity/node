@@ -38,7 +38,7 @@ export const broadcastSwarmJSONFile = async (node: any, data: any, nodeType: str
         senderType: nodeType,
         timestamp: `${Date.now()}`,
         channel: "swarm",
-        messageType: "nso ",
+        messageType: "json",
         data: { ...data }
     }
 
