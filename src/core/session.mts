@@ -23,7 +23,8 @@ const nextTick = async (node: any, nodeType: string) => {
         await broadcastSwarmPresence(node, nodeType)
         await pruneSwarm()
  
-        await fs.putJSON({ from: `${node.libp2p.peerId}`, now: `${Date.now()}` })
+        // await fs.putJSON({ from: `${node.libp2p.peerId}`, now: `${Date.now()}` })
+        await fs.putFile("landscape-lg.webp")
     }
 
     setTimeout(async () => {

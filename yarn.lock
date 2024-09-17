@@ -184,6 +184,18 @@
     multiformats "^13.1.0"
     progress-events "^1.0.0"
 
+"@helia/dag-cbor@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@helia/dag-cbor/-/dag-cbor-3.0.6.tgz#bf998a33587242a3ca81e8a584bc83ddd7953052"
+  integrity sha512-oQKip7IMEStarPA4U6MSyynEZRoxFU6cvZbKcHruogPOBbuYqfj4IbTsD0dtd7qCZ/tvpR1air5T878CmbDDPA==
+  dependencies:
+    "@helia/interface" "^4.3.1"
+    "@ipld/dag-cbor" "^9.2.0"
+    "@libp2p/interface" "^1.1.4"
+    interface-blockstore "^5.2.10"
+    multiformats "^13.1.0"
+    progress-events "^1.0.0"
+
 "@helia/dag-json@^3.0.6":
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/@helia/dag-json/-/dag-json-3.0.6.tgz#c8408765113d0cda1b187c78a0e95032f5c2361f"

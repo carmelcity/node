@@ -31,13 +31,41 @@ export const broadcastSwarmPeerSync = async (node: any, nodeType: string = "sent
     logger(`✓ broadcasted swarm peer sync with ${peerId}`, 'messenger')
 }
 
-export const broadcastSwarmJSONFile = async (node: any, data: any, nodeType: string = "sentinel") => {
+export const broadcastSwarmJSON = async (node: any, data: any, nodeType: string = "sentinel") => {
     const msg =  {
         senderId: `${node.libp2p.peerId}`,
         senderType: nodeType,
         timestamp: `${Date.now()}`,
         channel: "swarm",
         messageType: "json",
+        data: { ...data }
+    }
+
+    await node.libp2p.services.pubsub.publish(`carmel:swarm`, new TextEncoder().encode(JSON.stringify(msg)))
+    logger(`✓ broadcasted swarm json`, 'messenger')
+}
+
+export const broadcastSwarmObject = async (node: any, data: any, nodeType: string = "sentinel") => {
+    const msg =  {
+        senderId: `${node.libp2p.peerId}`,
+        senderType: nodeType,
+        timestamp: `${Date.now()}`,
+        channel: "swarm",
+        messageType: "object",
+        data: { ...data }
+    }
+
+    await node.libp2p.services.pubsub.publish(`carmel:swarm`, new TextEncoder().encode(JSON.stringify(msg)))
+    logger(`✓ broadcasted swarm object`, 'messenger')
+}
+
+export const broadcastSwarmFile = async (node: any, data: any, nodeType: string = "sentinel") => {
+    const msg =  {
+        senderId: `${node.libp2p.peerId}`,
+        senderType: nodeType,
+        timestamp: `${Date.now()}`,
+        channel: "swarm",
+        messageType: "file",
         data: { ...data }
     }
 
@@ -97,6 +125,14 @@ export const onMessageReceived = (node: any, nodeType: string = "sentinel") => (
 
     if (channel == "swarm" && messageType == "json") {
         return fs.onJSONReceived(data)
+    }
+
+    if (channel == "swarm" && messageType == "object") {
+        return fs.onObjectReceived(data)
+    }
+
+    if (channel == "swarm" && messageType == "file") {
+        return fs.onFileReceived(data)
     }
 }
  
