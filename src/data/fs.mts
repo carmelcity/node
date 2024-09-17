@@ -33,7 +33,7 @@ export const initialize = async (n: any, nType: string = "sentinel") => {
 export const putFile = async (filename: string) => {
     const file = path.resolve(CARMEL_HOME, 'cache', filename)
     
-    if (!fs.existsSync(file)) {
+    if (!fsx.existsSync(file)) {
         return 
     }
 
@@ -91,6 +91,6 @@ export const onFileReceived = async (message: any) => {
     logger(`← got1 file (${message.data.cid}) ✓`, 'fs')
     const obj = await cbor.get(CID.parse(message.data.cid));
     logger(`← got2 file (${message.data.cid}) ✓`, 'fs')
-    
+
     console.log("---", obj)
 }
