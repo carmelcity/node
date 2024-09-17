@@ -72,25 +72,23 @@ export const putJSON = async (data: any) => {
 }
 
 export const onObjectReceived = async (message: any) => {
-    logger(`← got1 object (${message.data.cid}) ✓`, 'fs')
     const obj = await cbor.get(CID.parse(message.data.cid));
-    logger(`← got2 object (${message.data.cid}) ✓`, 'fs')
 
-    console.log("---", obj)
+    logger(`← got object (${message.data.cid}) ✓`, 'fs')
 }
 
 export const onJSONReceived = async (message: any) => {
-    logger(`← got1 json (${message.data.cid}) ✓`, 'fs')
     const obj = await json.get(CID.parse(message.data.cid));
-    logger(`← got2 json (${message.data.cid}) ✓`, 'fs')
 
-    console.log("---", obj)
+    logger(`← got json (${message.data.cid}) ✓`, 'fs')
 }
 
 export const onFileReceived = async (message: any) => {
-    logger(`← got1 file (${message.data.cid}) ✓`, 'fs')
-    const obj = await cbor.get(CID.parse(message.data.cid));
-    logger(`← got2 file (${message.data.cid}) ✓`, 'fs')
+    const { cid, filename } = message.data
+    const obj = await cbor.get(CID.parse(cid))
 
-    console.log("---", obj)
+    logger(`← got file (${cid} ${filename}) ✓`, 'fs')
+
+    const file = path.resolve(CARMEL_HOME, 'cache', `${Date.now()}_${filename}`)
+    fsx.writeFileSync(file, obj)
 }
