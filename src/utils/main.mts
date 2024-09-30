@@ -1,8 +1,8 @@
-import { createFromPrivKey } from '@libp2p/peer-id-factory'
-import { keys } from '@libp2p/crypto'
 import debug from 'debug'
 import dotenv from 'dotenv'
 import path from 'path'
+import { privateKeyFromRaw } from '@libp2p/crypto/keys'
+import { peerIdFromPrivateKey } from '@libp2p/peer-id'
 
 const LOG = debug('carmel')
 const CARMEL_HOME = `${process.env.CARMEL_HOME}`
@@ -16,11 +16,11 @@ export const stopWithError = (msg: string, func: string = '') => {
     process.exit(1)
 }
 
-export const getPeerId = async () => {
+export const createNodeKey = async () => {
     const MAIN_ETH_PRIVATE_KEY = `${process.env.MAIN_ETH_PRIVATE_KEY}`
-    const { unmarshalSecp256k1PrivateKey } = keys.supportedKeys.secp256k1
-    const privateKey = unmarshalSecp256k1PrivateKey(Buffer.from(MAIN_ETH_PRIVATE_KEY.substring(2), 'hex'))
-    const peerId = await createFromPrivKey(privateKey)
+    const privateKeyBytes = Buffer.from(MAIN_ETH_PRIVATE_KEY.substring(2), 'hex')
+    const privateKey = privateKeyFromRaw(privateKeyBytes)
+    const peerId: any = await peerIdFromPrivateKey(privateKey)
 
-    return peerId
+    return { privateKey, peerId }
 }

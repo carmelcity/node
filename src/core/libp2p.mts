@@ -13,72 +13,81 @@ import { ping } from '@libp2p/ping'
 import { kadDHT } from '@libp2p/kad-dht'
 import dotenv from 'dotenv'
 import path from 'path'
+import { createNodeKey } from 'src/utils/main.mts'
 
 const CARMEL_HOME = `${process.env.CARMEL_HOME}`
 
 dotenv.config({ path: path.resolve(CARMEL_HOME, '.env') })
 
-const MAIN_ETH_PRIVATE_KEY: any = `${process.env.MAIN_ETH_PRIVATE_KEY}`
-
 export const makeRelayNode = async ({
     announce, server
-}: any) => createLibp2p({
-    privateKey: MAIN_ETH_PRIVATE_KEY,
-    addresses: Object.assign({
-        listen: [
-            `/webrtc`,
-        ]
-    }, announce && { announce }),
-    transports: [
-        tcp(),
-        circuitRelayTransport(),
-        webSockets(Object.assign({
-            filter: filters.all
-        }, server && { server }))
-    ],
-    connectionEncrypters: [noise()],
-    streamMuxers: [yamux()],
-    services: {
-        pubsub: gossipsub(),
-        identify: identify(),
-        relay: circuitRelayServer()
-    }
-})
+}: any) => {
+    const { privateKey }: any = await createNodeKey()
+
+    return createLibp2p({
+        privateKey,
+        addresses: Object.assign({
+            listen: [
+                `/webrtc`,
+            ]
+        }, announce && { announce }),
+        transports: [
+            tcp(),
+            circuitRelayTransport(),
+            webSockets(Object.assign({
+                filter: filters.all
+            }, server && { server }))
+        ],
+        connectionEncrypters: [noise()],
+        streamMuxers: [yamux()],
+        services: {
+            pubsub: gossipsub(),
+            identify: identify(),
+            relay: circuitRelayServer()
+        }
+    })
+}
 
 export const makeSentinelNode = async ({
     relays
-}: any) => createLibp2p({
-    privateKey: MAIN_ETH_PRIVATE_KEY,
-    addresses: {
-        listen: [
-          '/webrtc',
-        ]
-    },
-    peerDiscovery: [
-        bootstrap({
-            list: relays
-        })
-    ],
-    transports: [
-        circuitRelayTransport({
-            discoverRelays: 1
-        }),
-        webRTC(),
-        webSockets({
-            filter: filters.all
-        })
-    ],
-    connectionEncrypters: [noise()],
-    streamMuxers: [yamux()],
-    services: {
-        ping: ping(),
-        dht: kadDHT({
-        }),
-        pubsub: gossipsub(),
-        identify: identify(),
-    },  
-    connectionManager: {
-        maxConnections: 10,
-        inboundUpgradeTimeout: 10000
-    }
-})
+}: any) => {
+    const { privateKey }: any = await createNodeKey()
+
+    const node = createLibp2p({
+        privateKey,
+        addresses: {
+            listen: [
+            '/webrtc',
+            ]
+        },
+        peerDiscovery: [
+            bootstrap({
+                list: relays
+            })
+        ],
+        transports: [
+            circuitRelayTransport({
+                discoverRelays: 1
+            }),
+            webRTC(),
+            webSockets({
+                filter: filters.all
+            })
+        ],
+        connectionEncrypters: [noise()],
+        streamMuxers: [yamux()],
+        services: {
+            ping: ping(),
+            dht: kadDHT({
+            }),
+            pubsub: gossipsub(),
+            identify: identify(),
+        },  
+        connectionManager: {
+            maxConnections: 10,
+            inboundUpgradeTimeout: 10000
+        }
+    })
+
+    return node
+}
