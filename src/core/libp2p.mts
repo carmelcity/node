@@ -1,8 +1,6 @@
 import { tcp } from '@libp2p/tcp'
-import { mplex } from '@libp2p/mplex'
 import { createLibp2p } from 'libp2p'
 import { identify } from '@libp2p/identify'
-import { floodsub } from '@libp2p/floodsub'
 import { noise } from '@chainsafe/libp2p-noise'
 import { webSockets } from '@libp2p/websockets'
 import { yamux } from '@chainsafe/libp2p-yamux'
@@ -13,14 +11,22 @@ import { webRTC } from '@libp2p/webrtc'
 import { gossipsub } from '@chainsafe/libp2p-gossipsub'
 import { ping } from '@libp2p/ping'
 import { kadDHT } from '@libp2p/kad-dht'
+import dotenv from 'dotenv'
+import path from 'path'
+
+const CARMEL_HOME = `${process.env.CARMEL_HOME}`
+
+dotenv.config({ path: path.resolve(CARMEL_HOME, '.env') })
+
+const MAIN_ETH_PRIVATE_KEY: any = `${process.env.MAIN_ETH_PRIVATE_KEY}`
 
 export const makeRelayNode = async ({
-    peerId, port, announce, server
+    announce, server
 }: any) => createLibp2p({
-    peerId,
+    privateKey: MAIN_ETH_PRIVATE_KEY,
     addresses: Object.assign({
         listen: [
-            `/ip4/0.0.0.0/tcp/${port}/wss`,
+            `/webrtc`,
         ]
     }, announce && { announce }),
     transports: [
@@ -30,19 +36,19 @@ export const makeRelayNode = async ({
             filter: filters.all
         }, server && { server }))
     ],
-    connectionEncryption: [noise()],
-    streamMuxers: [mplex(), yamux()],
+    connectionEncrypters: [noise()],
+    streamMuxers: [yamux()],
     services: {
-        pubsub: floodsub(),
+        pubsub: gossipsub(),
         identify: identify(),
         relay: circuitRelayServer()
     }
 })
 
 export const makeSentinelNode = async ({
-    peerId, relays, datastore
+    relays
 }: any) => createLibp2p({
-    peerId,
+    privateKey: MAIN_ETH_PRIVATE_KEY,
     addresses: {
         listen: [
           '/webrtc',
@@ -62,8 +68,8 @@ export const makeSentinelNode = async ({
             filter: filters.all
         })
     ],
-    connectionEncryption: [noise()],
-    streamMuxers: [mplex(), yamux()],
+    connectionEncrypters: [noise()],
+    streamMuxers: [yamux()],
     services: {
         ping: ping(),
         dht: kadDHT({
@@ -73,8 +79,6 @@ export const makeSentinelNode = async ({
     },  
     connectionManager: {
         maxConnections: 10,
-        minConnections: 1,
-        autoDialInterval: Infinity,
         inboundUpgradeTimeout: 10000
-    },
+    }
 })
