@@ -107,32 +107,36 @@ const onSwarmPeerSyncReceived = async (node: any, nodeType: string, message: any
 }
 
 export const onMessageReceived = (node: any, nodeType: string = "sentinel") => (message: any) => {
-    const { detail } = message
-    const { topic } = detail 
-    const dataString = new TextDecoder().decode(detail.data)
-    const data = JSON.parse(dataString)
+    try {
+        const { detail } = message
+        const { topic } = detail 
+        const dataString = new TextDecoder().decode(detail.data)
+        const data = JSON.parse(dataString)
 
-    const { senderId, senderType, messageType, channel } = data 
-    logger(`✓ got [${topic}] message (channel=${channel} senderId=${senderId} senderType=${senderType} messageType=${messageType})`, 'messenger')
+        const { senderId, senderType, messageType, channel } = data 
+        logger(`✓ got [${topic}] message (channel=${channel} senderId=${senderId} senderType=${senderType} messageType=${messageType})`, 'messenger')
 
-    if (channel == "swarm" && messageType == "present") {
-        return onSwarmPresenceReceived(node, nodeType, data)
-    }
+        if (channel == "swarm" && messageType == "present") {
+            return onSwarmPresenceReceived(node, nodeType, data)
+        }
 
-    if (channel == "swarm" && messageType == "sync") {
-        return onSwarmPeerSyncReceived(node, nodeType, data)
-    }
+        if (channel == "swarm" && messageType == "sync") {
+            return onSwarmPeerSyncReceived(node, nodeType, data)
+        }
 
-    if (channel == "swarm" && messageType == "json") {
-        return fs.onJSONReceived(data)
-    }
+        if (channel == "swarm" && messageType == "json") {
+            return fs.onJSONReceived(data)
+        }
 
-    if (channel == "swarm" && messageType == "object") {
-        return fs.onObjectReceived(data)
-    }
+        if (channel == "swarm" && messageType == "object") {
+            return fs.onObjectReceived(data)
+        }
 
-    if (channel == "swarm" && messageType == "file") {
-        return fs.onFileReceived(data)
+        if (channel == "swarm" && messageType == "file") {
+            return fs.onFileReceived(data)
+        }
+    } catch (e) {
+        console.log(e)
     }
 }
  
