@@ -57,5 +57,5 @@ export const start = async () => {
     logger(`relay started with id ${libp2p.peerId.toString()}`)
 
     // start the session
-    await startSession(node, 'relay')
+    return startSession(node, 'relay')
 }

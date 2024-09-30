@@ -39,8 +39,6 @@ export const start = async () => {
         relays
     })
 
-    await libp2p.start()
-
     logger(`sentinel started with id ${libp2p.peerId.toString()}`)
     
     const node = await createHelia({
@@ -49,5 +47,5 @@ export const start = async () => {
     })
 
     // start the session
-    await startSession(node)
+    return startSession(node)
 }

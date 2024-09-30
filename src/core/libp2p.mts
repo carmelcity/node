@@ -27,6 +27,7 @@ export const makeRelayNode = async ({
 
     return createLibp2p({
         privateKey,
+        start: true,
         addresses: Object.assign({
             listen: [
                 '/webrtc',
@@ -62,6 +63,7 @@ export const makeSentinelNode = async ({
 
     const node = createLibp2p({
         privateKey,
+        start: true,
         addresses: {
             listen: [
             '/webrtc',
@@ -88,8 +90,6 @@ export const makeSentinelNode = async ({
         streamMuxers: [yamux()],
         services: {
             ping: ping(),
-            dht: kadDHT({
-            }),
             pubsub: gossipsub(),
             identify: identify(),
         },  
