@@ -43,7 +43,8 @@ export const makeRelayNode = async ({
         ],
         peerDiscovery: [
             pubsubPeerDiscovery({
-              interval: 1000
+              interval: 1000,
+              topics: ['carmel:swarm']
             })
         ],
         connectionEncrypters: [noise()],
@@ -74,7 +75,8 @@ export const makeSentinelNode = async ({
                 list: relays
             }),
             pubsubPeerDiscovery({
-                interval: 1000
+                interval: 1000,
+                topics: ['carmel:swarm']
             })
         ],
         transports: [
