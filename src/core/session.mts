@@ -1,45 +1,69 @@
 import { db, fs } from '../data/index.mts'
 import { logger } from 'src/utils/main.mts'
+import { getRelays } from './libp2p.mts'
 import { onMessageReceived, broadcastSwarmPresence } from '../core/messenger.mts'
+import { multiaddr } from "@multiformats/multiaddr"
 
 const TICK_TIME_SEC = 3
 let counter: number = 0
+let relay: any = undefined
 
 export let swarm: any = {}
 
 const doNextTick =  async (node: any, nodeType: string = "sentinel") => {    
     setTimeout(async () => {
         await nextTick(node, nodeType)
-    }, TICK_TIME_SEC * 1000)
+    }, TICK_TIME_SEC * 1000)    
+}
+
+const tryNextRelay = async (node: any, addr: string) => {
+    try {
+      const res = await node.libp2p.dial(multiaddr(addr))
+      return addr
+    } catch (e) {
+    }
+}
+
+const dialRelays = async (node: any) => {
+    const addresses = await getRelays()
+    let r: any = ''
+    let i = 0
+    let total = addresses.length
+
+    logger('dialing relays ...')
+
+    while (!r && i < total) {
+      r = await tryNextRelay(node, addresses[i])
+      i++
+    }
+    
+    if (!r) {
+      logger("could not connect to any relay")
+      return 
+    }
+
+    logger(`Connected to relay: ${r}`)
+    relay = r
+    return r
 }
 
 const nextTick = async (node: any, nodeType: string = "sentinel") => {    
     const swarmers = node.libp2p.services.pubsub.getSubscribers('carmel:swarm')
-    const peers = node.libp2p.getPeers()
-
     counter++
-
-    if (!peers || peers.length <= 0) {
-        logger('no peers yet', 'session')
-        return doNextTick(node, nodeType)
-    }
-
-    logger(`found ${peers.length} peers`)
 
     if (!swarmers || swarmers.length <= 0) {
         logger('no swarmers yet', 'session')
+        nodeType == "sentinel" && await dialRelays(node)
         return doNextTick(node, nodeType)
     }
-
-    logger(`found ${swarmers.length} swarmers`)
 
     await broadcastSwarmPresence(node, nodeType)
     await pruneSwarm()
 
-    await fs.putJSON({ from: `${node.libp2p.peerId}`, now: `${Date.now()}` })
+    // await fs.putJSON({ from: `${node.libp2p.peerId}`, now: `${Date.now()}` })
     // await fs.putFile("landscape-lg.webp")
 
-   return doNextTick(node, nodeType)
+    return doNextTick(node, nodeType)
 }
 
 const pruneSwarm = async () => {

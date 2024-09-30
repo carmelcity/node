@@ -6,19 +6,31 @@ import { webSockets } from '@libp2p/websockets'
 import { yamux } from '@chainsafe/libp2p-yamux'
 import * as filters from '@libp2p/websockets/filters'
 import { circuitRelayTransport, circuitRelayServer } from '@libp2p/circuit-relay-v2'
-import { bootstrap } from '@libp2p/bootstrap'
 import { webRTC } from '@libp2p/webrtc'
 import { gossipsub } from '@chainsafe/libp2p-gossipsub'
 import { ping } from '@libp2p/ping'
-import { kadDHT } from '@libp2p/kad-dht'
 import dotenv from 'dotenv'
 import path from 'path'
 import { createNodeKey } from 'src/utils/main.mts'
-import { pubsubPeerDiscovery } from '@libp2p/pubsub-peer-discovery'
 
 const CARMEL_HOME = `${process.env.CARMEL_HOME}`
 
 dotenv.config({ path: path.resolve(CARMEL_HOME, '.env') })
+
+export const getRelays = async () => {
+    const relays = [{
+        domain: `r0.carmel.network`,
+        port: 9009,
+        peerId: `16Uiu2HAkzoD7NHWgVP8zJkSTubA4wrHSUphY7CMy736mamBDcemZ`
+    }]
+
+    const parsed = relays.map((relay: any) => `/dns4/${relay.domain}/tcp/${relay.port}/wss/p2p/${relay.peerId}`)
+
+    return [
+        ...parsed,
+
+    ]
+}
 
 export const makeRelayNode = async ({
     announce, server, port
@@ -40,12 +52,6 @@ export const makeRelayNode = async ({
                 filter: filters.all
             }, server && { server }))
         ],
-        // peerDiscovery: [
-        //     pubsubPeerDiscovery({
-        //       interval: 1000,
-        //       topics: ['carmel:discover']
-        //     })
-        // ],
         connectionEncrypters: [noise()],
         streamMuxers: [yamux()],
         services: {
@@ -56,12 +62,10 @@ export const makeRelayNode = async ({
     })
 }
 
-export const makeSentinelNode = async ({
-    relays
-}: any) => {
+export const makeSentinelNode = async () => {
     const { privateKey }: any = await createNodeKey()
 
-    const node = createLibp2p({
+    return createLibp2p({
         privateKey,
         start: true,
         addresses: {
@@ -69,15 +73,6 @@ export const makeSentinelNode = async ({
                 '/webrtc',
             ]
         },
-        peerDiscovery: [
-            bootstrap({
-                list: relays
-            }),
-            // pubsubPeerDiscovery({
-            //     interval: 1000,
-            //     topics: ['carmel:discover']
-            // })
-        ],
         transports: [
             circuitRelayTransport({
                 discoverRelays: 1
@@ -92,14 +87,11 @@ export const makeSentinelNode = async ({
         services: {
             ping: ping(),
             pubsub: gossipsub(),
-            identify: identify(),
-            dht: kadDHT()
+            identify: identify()
         },  
         connectionManager: {
             maxConnections: 10,
             inboundUpgradeTimeout: 10000
         }
     })
-
-    return node
 }
