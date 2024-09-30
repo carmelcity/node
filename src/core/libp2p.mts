@@ -41,12 +41,12 @@ export const makeRelayNode = async ({
                 filter: filters.all
             }, server && { server }))
         ],
-        peerDiscovery: [
-            pubsubPeerDiscovery({
-              interval: 1000,
-              topics: ['carmel:swarm']
-            })
-        ],
+        // peerDiscovery: [
+        //     pubsubPeerDiscovery({
+        //       interval: 1000,
+        //       topics: ['carmel:swarm']
+        //     })
+        // ],
         connectionEncrypters: [noise()],
         streamMuxers: [yamux()],
         services: {
@@ -67,17 +67,17 @@ export const makeSentinelNode = async ({
         start: true,
         addresses: {
             listen: [
-            '/webrtc',
+                '/webrtc',
             ]
         },
         peerDiscovery: [
             bootstrap({
                 list: relays
             }),
-            pubsubPeerDiscovery({
-                interval: 1000,
-                topics: ['carmel:swarm']
-            })
+            // pubsubPeerDiscovery({
+            //     interval: 1000,
+            //     topics: ['carmel:swarm']
+            // })
         ],
         transports: [
             circuitRelayTransport({
