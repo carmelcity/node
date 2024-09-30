@@ -1,7 +1,6 @@
 import { db, fs } from '../data/index.mts'
 import { logger } from 'src/utils/main.mts'
-import { onMessageReceived, broadcastSwarmPresence, broadcastSwarmObject } from '../core/messenger.mts'
-import Bree from 'bree'
+import { onMessageReceived, broadcastSwarmPresence } from '../core/messenger.mts'
 
 const TICK_TIME_SEC = 3
 let counter: number = 0
@@ -16,7 +15,16 @@ const doNextTick =  async (node: any, nodeType: string = "sentinel") => {
 
 const nextTick = async (node: any, nodeType: string = "sentinel") => {    
     const swarmers = node.libp2p.services.pubsub.getSubscribers('carmel:swarm')
+    const peers = node.libp2p.getPeers()
+
     counter++
+
+    if (!peers || peers.length <= 0) {
+        logger('no peers yet', 'session')
+        return doNextTick(node, nodeType)
+    }
+
+    logger(`found ${peers.length} peers`)
 
     if (!swarmers || swarmers.length <= 0) {
         logger('no swarmers yet', 'session')
