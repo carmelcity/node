@@ -1,10 +1,31 @@
 import { db, fs } from '../data/index.mts'
 import { logger } from 'src/utils/main.mts'
 import { onMessageReceived, broadcastSwarmPresence } from '../core/messenger.mts'
+import Bree from 'bree'
 
-const TICK_TIME_SEC = 12
+const TICK_TIME_SEC = 1
+let timer: any = undefined
+let counter: number = 0
+let stopSession: boolean = false 
+let bree: any = undefined
 
 export let swarm: any = {}
+
+const nextTick = async () => {    
+    console.log(counter)
+    // const swarmers = node.libp2p.services.pubsub.getSubscribers('carmel:swarm')
+    // console.log(swarmers)
+
+    // if (swarmers && swarmers.length > 0) {
+    //     await broadcastSwarmPresence(node, nodeType)
+    //     await pruneSwarm()
+
+    //     // await fs.putJSON({ from: `${node.libp2p.peerId}`, now: `${Date.now()}` })
+    //     await fs.putFile("landscape-lg.webp")
+    // }
+
+    counter++
+}
 
 const pruneSwarm = async () => {
     const peerIds = Object.keys(swarm)
@@ -14,22 +35,6 @@ const pruneSwarm = async () => {
     peerIds.map((peerId: any) => {
         logger(`  → peer ${peerId}`, 'session')
     })
-}
-
-const nextTick = async (node: any, nodeType: string) => {    
-    const swarmers = node.libp2p.services.pubsub.getSubscribers('carmel:swarm')
-    
-    if (swarmers && swarmers.length > 0) {
-        await broadcastSwarmPresence(node, nodeType)
-        await pruneSwarm()
- 
-        // await fs.putJSON({ from: `${node.libp2p.peerId}`, now: `${Date.now()}` })
-        await fs.putFile("landscape-lg.webp")
-    }
-
-    setTimeout(async () => {
-        await nextTick(node, nodeType)
-    }, TICK_TIME_SEC * 1000)
 }
 
 export const getSwarmPeer = (peerId: string) => {
@@ -77,5 +82,8 @@ export const startSession = async (node: any, nodeType: string = "sentinel") => 
     await db.initialize()
     await fs.initialize(node, nodeType)
 
-    await nextTick(node, nodeType)
+    node.libp2p.addEventListener('peer:discovery', (evt: any) => {
+        const peer = evt.detail
+        console.log(`discovered peer ${peer.id.toString()}`)
+    })
 }

@@ -14,6 +14,7 @@ import { kadDHT } from '@libp2p/kad-dht'
 import dotenv from 'dotenv'
 import path from 'path'
 import { createNodeKey } from 'src/utils/main.mts'
+import { pubsubPeerDiscovery } from '@libp2p/pubsub-peer-discovery'
 
 const CARMEL_HOME = `${process.env.CARMEL_HOME}`
 
@@ -38,6 +39,11 @@ export const makeRelayNode = async ({
             webSockets(Object.assign({
                 filter: filters.all
             }, server && { server }))
+        ],
+        peerDiscovery: [
+            pubsubPeerDiscovery({
+              interval: 1000
+            })
         ],
         connectionEncrypters: [noise()],
         streamMuxers: [yamux()],
@@ -64,6 +70,9 @@ export const makeSentinelNode = async ({
         peerDiscovery: [
             bootstrap({
                 list: relays
+            }),
+            pubsubPeerDiscovery({
+                interval: 1000
             })
         ],
         transports: [
