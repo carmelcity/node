@@ -28,11 +28,12 @@ export const makeRelayNode = async ({
         privateKey,
         addresses: Object.assign({
             listen: [
-                `/webrtc`,
+                '/webrtc',
             ]
         }, announce && { announce }),
         transports: [
             tcp(),
+            webRTC(),
             circuitRelayTransport(),
             webSockets(Object.assign({
                 filter: filters.all
