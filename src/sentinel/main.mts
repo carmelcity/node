@@ -1,8 +1,8 @@
 import path from 'path'
 import dotenv from 'dotenv'
-import { makeSentinelNode } from 'src/core/libp2p.mts'
-import { getPeerId, logger } from '../utils/main.mjs'
-import { startSession } from 'src/index.mts'
+import { makeSentinelNode } from '../core/libp2p.mts'
+import { createNodeKey, logger } from '../utils/main.mjs'
+import { startSession } from '../index.mts'
 import { createHelia } from 'helia'
 import { FsBlockstore } from 'blockstore-fs'
 
@@ -26,18 +26,17 @@ const getRelays = async () => {
 }
 
 export const start = async () => {
-    const peerId = await getPeerId()
-
     const ipfsRoot = path.resolve(CARMEL_HOME, 'ipfs')
+    const { peerId } = await createNodeKey()
 
-    logger(`starting sentinel with peerId=${peerId} ...`)
+    logger(`starting sentinel (peerId=${peerId}) ...`)
 
     const relays = await getRelays()
     
     const blockstore = new FsBlockstore(path.resolve(ipfsRoot, 'blockstore'))
 
-    const libp2p = await makeSentinelNode({
-        peerId, relays
+    const libp2p: any = await makeSentinelNode({
+        relays
     })
 
     await libp2p.start()

@@ -2,7 +2,7 @@ import path from 'path'
 import https from 'https'
 import dotenv from 'dotenv'
 import { makeRelayNode } from 'src/core/libp2p.mts'
-import { getPeerId, logger } from '../utils/main.mjs'
+import { logger, createNodeKey } from '../utils/main.mjs'
 import { loadSSL } from './config.mts'
 import { startSession } from 'src/index.mts'
 import { FsBlockstore } from 'blockstore-fs'
@@ -13,7 +13,7 @@ const CARMEL_HOME = `${process.env.CARMEL_HOME}`
 dotenv.config({ path: path.resolve(CARMEL_HOME, '.env') })
 
 export const start = async () => {
-    const peerId = await getPeerId()
+    const { peerId }: any = await createNodeKey()
 
     const domain = `${process.env.MAIN_SSL_DOMAIN}`
     const port = `${process.env.MAIN_SSL_PORT}`
@@ -27,11 +27,11 @@ export const start = async () => {
     const server = https.createServer(ssl)
     const announce = [`/dns4/${domain}/tcp/${port}/wss/p2p/${peerId}`]
     
-    logger(`starting relay with peerId=${peerId} ...`)
+    logger(`starting relay (peerId=${peerId}) ...`)
     const ipfsRoot = path.resolve(CARMEL_HOME, 'ipfs')
 
-    const libp2p = await makeRelayNode({
-        peerId, announce, port, server
+    const libp2p: any = await makeRelayNode({
+        announce, port, server
     })
 
     await libp2p.start()
