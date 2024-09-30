@@ -21,7 +21,7 @@ const CARMEL_HOME = `${process.env.CARMEL_HOME}`
 dotenv.config({ path: path.resolve(CARMEL_HOME, '.env') })
 
 export const makeRelayNode = async ({
-    announce, server
+    announce, server, port
 }: any) => {
     const { privateKey }: any = await createNodeKey()
 
@@ -30,23 +30,22 @@ export const makeRelayNode = async ({
         start: true,
         addresses: Object.assign({
             listen: [
-                '/webrtc',
+                `/ip4/0.0.0.0/tcp/${port}/wss`,
             ]
         }, announce && { announce }),
         transports: [
             tcp(),
-            webRTC(),
             circuitRelayTransport(),
             webSockets(Object.assign({
                 filter: filters.all
             }, server && { server }))
         ],
-        // peerDiscovery: [
-        //     pubsubPeerDiscovery({
-        //       interval: 1000,
-        //       topics: ['carmel:swarm']
-        //     })
-        // ],
+        peerDiscovery: [
+            pubsubPeerDiscovery({
+              interval: 1000,
+              topics: ['carmel:discover']
+            })
+        ],
         connectionEncrypters: [noise()],
         streamMuxers: [yamux()],
         services: {
@@ -74,10 +73,10 @@ export const makeSentinelNode = async ({
             bootstrap({
                 list: relays
             }),
-            // pubsubPeerDiscovery({
-            //     interval: 1000,
-            //     topics: ['carmel:swarm']
-            // })
+            pubsubPeerDiscovery({
+                interval: 1000,
+                topics: ['carmel:discover']
+            })
         ],
         transports: [
             circuitRelayTransport({
@@ -94,6 +93,7 @@ export const makeSentinelNode = async ({
             ping: ping(),
             pubsub: gossipsub(),
             identify: identify(),
+            dht: kadDHT()
         },  
         connectionManager: {
             maxConnections: 10,
