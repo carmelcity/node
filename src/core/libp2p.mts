@@ -40,12 +40,12 @@ export const makeRelayNode = async ({
                 filter: filters.all
             }, server && { server }))
         ],
-        peerDiscovery: [
-            pubsubPeerDiscovery({
-              interval: 1000,
-              topics: ['carmel:discover']
-            })
-        ],
+        // peerDiscovery: [
+        //     pubsubPeerDiscovery({
+        //       interval: 1000,
+        //       topics: ['carmel:discover']
+        //     })
+        // ],
         connectionEncrypters: [noise()],
         streamMuxers: [yamux()],
         services: {
@@ -73,10 +73,10 @@ export const makeSentinelNode = async ({
             bootstrap({
                 list: relays
             }),
-            pubsubPeerDiscovery({
-                interval: 1000,
-                topics: ['carmel:discover']
-            })
+            // pubsubPeerDiscovery({
+            //     interval: 1000,
+            //     topics: ['carmel:discover']
+            // })
         ],
         transports: [
             circuitRelayTransport({
