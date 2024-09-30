@@ -30,7 +30,7 @@ export const start = async () => {
     const { peerId } = await createNodeKey()
 
     logger(`starting sentinel (peerId=${peerId}) ...`)
-
+ 
     const relays = await getRelays()
     
     const blockstore = new FsBlockstore(path.resolve(ipfsRoot, 'blockstore'))
