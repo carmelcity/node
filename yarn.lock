@@ -31,10 +31,10 @@
   resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.9.4.tgz#a483c54c1253656bb33babd464e3154a173e1577"
   integrity sha512-HazVq9zwTVwGmqdwYzu7WyQ6FQVZ7SwET0KKQuKm55jD0IfUpZgN0OPIiZG3zV1iSrVYcN0bdwLRXI/VNCYsUA==
 
-"@carmel/core@^1.10.3":
-  version "1.10.3"
-  resolved "https://registry.yarnpkg.com/@carmel/core/-/core-1.10.3.tgz#19f6bc4f44ed3ad7b572ebc111c74ab2a5b57a7f"
-  integrity sha512-rxoBOsWKXPzz4QBDQS0nfNmvWCXOEWHQm5nuLqmYYRMb0VIRiEUvNr3yEzZEMxyMQ8dA3AS7vDIB2KD9KAYfug==
+"@carmel/core@^1.10.4":
+  version "1.10.4"
+  resolved "https://registry.yarnpkg.com/@carmel/core/-/core-1.10.4.tgz#27222911457d264c1f6bb3f2325e6faf9e7806c5"
+  integrity sha512-UHQZ8RnRbVNTdEsXA9fNXIlCYTqNjTLkwR8pllFBkHF+IXTseSMhSsEZOR9ncoMySmGBjojIXChesG0epLVP0Q==
   dependencies:
     "@chainsafe/libp2p-gossipsub" "^14.1.0"
     "@chainsafe/libp2p-noise" "^16.0.0"
