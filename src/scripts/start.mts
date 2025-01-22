@@ -1,5 +1,5 @@
-import { session, config } from "@carmel/core/lib/index.mjs"
+import { startServer } from "../core/server.mts"
 
 (async () => {
-    await session.start(config)
+    await startServer()
 })()
