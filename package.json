@@ -7,7 +7,8 @@
     "author": "Chunky <chunky@fluidtrends.com>",
     "license": "MIT",
     "scripts": {
-        "dev": "DEBUG=carmel* node --import @swc-node/register/esm-register src/scripts/start.mts",
+        "dev": "DEBUG=carmel* tsx src/scripts/start.mts",
+        "dev2": "DEBUG=carmel* node --import @swc-node/register/esm-register src/scripts/start.mts",
         "start": "DEBUG=carmel* pm2 --node-args=\"--import @swc-node/register/esm-register\" start src/scripts/start.mts --name carmel-node",
         "log": "pm2 logs carmel-node"
     },
@@ -56,6 +57,8 @@
         "@swc-node/register": "^1.10.9",
         "@swc/core": "^1.7.5",
         "@types/node": "^22.5.0",
+        "ts-node": "^10.9.2",
+        "tsx": "^4.19.2",
         "typescript": "^5.5.4"
     }
 }
