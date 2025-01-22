@@ -49,6 +49,7 @@
         "datastore-idb": "^3.0.1",
         "debug": "^4.4.0",
         "fs-extra": "^11.3.0",
+        "helia": "^5.2.0",
         "libp2p": "^2.5.0"
     },
     "devDependencies": {
